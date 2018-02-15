@@ -1,0 +1,139 @@
+---
+title: "Exploring water quality"
+author: "Nicolas F. S-Gelais"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='figures/',
+                      echo=TRUE, warning=FALSE, message=FALSE,fig.width=6, fig.height=6,fig.align = "center")
+
+knitr::opts_knit$set(output.dir="reports")
+```
+
+### Read files
+
+Import the canadian rivers dataset data on stations and the canadian guidelines
+```{r init data}
+library(knitr)
+library(kableExtra)
+rm(list=ls(all=TRUE))
+source("R/functions.R")
+load("data/dataCDN.RData")
+load("data/sitesClass.RData")
+```
+
+```{r import data}
+
+```
+
+### 1. Compare ecoservices guidelines
+
+In this table, we compare the proportion of guidelines in each group (columns) that are used for each ecoservice (rows). For irrigation and livestock, most guidelines are for pesticides and metals, while for drinking and aquatic wildlife, most guidelines are for pesticides and organic chemicals. For recreational activities guidelines are biollogical, physical and ph, while for trophic state guidelines are mostly for inorganic chemicals (i.e. nutrients). 
+
+(add a venn diagram for guidelines overlap?)
+
+```{r Explore guidelines ,echo=F}
+polCat=matrix(0,length(unique(guide$SuperCategory)),length(unique(guide$Chemical.groups)),dimnames=list(unique(guide$SuperCategory),unique(guide$Chemical.groups)))
+
+for(i in unique(guide$SuperCategory)){
+  for(j in unique(guide$Chemical.groups)){
+    polCat[i,j]=nrow(guide[guide$SuperCategory%in%i&guide$Chemical.groups%in%j,])/nrow(guide[guide$SuperCategory%in%i,])
+  } }
+
+par(mar = c(0.5, 6, 12, 0.5))
+plotrix::color2D.matplot(polCat,
+                show.values = TRUE,
+                axes = F,
+                xlab = "",
+                ylab = "",
+                vcex = 1,
+                vcol = "black",
+                extremes = c("white", "red"))
+
+axis(3, at = seq_len(ncol(polCat)) - 0.5,
+     labels = colnames(polCat), tick = FALSE, cex.axis = 1,las=2)
+
+axis(2, at = seq_len(nrow(polCat)) -0.5,
+     labels = rev(rownames(polCat)), tick = FALSE, las = 1, cex.axis = 1)
+
+
+#kable(incMatrix, "html") %>%
+ # kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+```
+
+
+### 2.Compare ecoservices in the dataset
+
+In this table, we compare the occurence of the different ecoservices in the dataset. On the diagonal of this table, the proportion of sites for which a given criteria was met is reported. Outside the diagonal we are reporting how often the column criteria is met when the row criteria is met. 
+
+```{r inclusion matrix ,echo=F}
+incMatrix=matrix(NA,ncol(sitesClass),ncol(sitesClass),dimnames=list(colnames(sitesClass),colnames(sitesClass)))
+
+for(i in colnames(incMatrix)){
+  for(j in colnames(incMatrix)){
+    if(i==j){incMatrix[i,j]=round(sum(sitesClass[,i],na.rm = T)/nrow(sitesClass[!is.na(sitesClass[,i]),]),2 )}  else{
+      subM=sitesClass[sitesClass[,i]==1&!is.na(sitesClass[,i]),]
+      incMatrix[i,j]=round(sum(subM[,j],na.rm = T)/nrow( subM[!is.na(subM[,j]),]),2)}
+  }}
+
+kable(incMatrix, "html") %>%
+  kable_styling(position="center",bootstrap_options = c("striped", "hover", "condensed"))
+
+```
+
+In this dataset, `r incMatrix["oligotrophic","oligotrophic"]*100` % of sites were oligotrophic, `r incMatrix["mesotrophic","mesotrophic"]*100` % mesotrophic and `r incMatrix["eutrophic","eutrophic"]*100`%  eutrophic. Only `r incMatrix["aquatic","aquatic"]*100`% of the samples were suitable for aquatic life, `r incMatrix["recreational","recreational"]*100`% for swimming and `r incMatrix["drink","drink"]*100`% for drinking. For gricultural use, in `r incMatrix["irrigation","irrigation"]*100`% of the samples the water was usable for irrigation and `r incMatrix["livestock","livestock"]*100`% for livestock. 
+
+When the water is oligotrophic are more often suitable for aquatic life (`r incMatrix["oligotrophic","aquatic"]*100`%), recreation (`r incMatrix["oligotrophic","recreational"]*100`%), drinking (`r incMatrix["oligotrophic","drink"]*100`%) and irrigation (`r incMatrix["oligotrophic","irrigation"]*100`%) than mesotrpohic and eutrophic samples. 
+
+Because, the drinking and livestock criteria were met in the vast majority of samples, they were not included in the analyses.  
+
+
+#### Ecoservices PCA
+*** 
+
+In the ecoservices PCA, the first and second axes are mainly trophic axes, on which, all ecoservices are more associated with oligotrophic water. On the third axis, we see a strong association between recreational and irrgations services, and between aquatic wildlife and drinking, but a negative association between the two groups. By looking at the ecoservices guideline table, it make sense that aquatic wildlife and drinking are associated, as their respectives guidelines are similar, but it isn't the case for irrigation and recreation. 
+```{r services PCA,echo=F}
+
+spaceSel=c("oligotrophic","mesotrophic","aquatic","irrigation","recreational","drink","eutrophic")
+sel=which(rowSums(is.na(sitesClass[,spaceSel])) == 0)
+pca=prcomp(sitesClass[sel,spaceSel],center = T,scale. = T)
+
+# axes 1 and 2
+axes=c(1,2)
+m=1
+sp=vegan::scores(pca,display = "species",choices=axes*m)
+plot(vegan::scores(pca,display = "species"),type="n",xlim=range(sp[,1]*1.1),ylab="PC2",xlab="PC1")
+text(sp,labels=rownames(sp),col="grey35")
+arrows(0,0,sp[,1]*0.85,sp[,2]*0.85,length=0.07)
+abline(h=0);abline(v=0)
+
+# axes 1 and 2
+axes=c(2,3)
+m=1
+sp=vegan::scores(pca,display = "species",choices=axes*m)
+plot(vegan::scores(pca,display = "species"),type="n",xlim=range(sp[,1]*1.1),ylab="PC3",xlab="PC2")
+text(sp,labels=rownames(sp),col="grey35")
+arrows(0,0,sp[,1]*0.85,sp[,2]*0.85,length=0.07)
+abline(h=0);abline(v=0)
+
+
+```
+
+#### Comparing the limiting guidelines
+*** 
+
+In this table we compare the limiting guidelines for each ecoservice. For each guideline, we report how often when a sample cannot provide an ecoservice a specific guideline responsible for the none compliance. 
+For trophic status, when a sample change from one trophic status to the other, TN and TP are almost always both over the guideline (Even if TP was measure more often)
+```{r compaare limiting,echo=F}
+limComp=round(limFreqTable/limTotTable,2)
+limComp=limComp[order(rowSums(limComp,na.rm = T),decreasing = T),]
+
+limComp[is.nan(limComp)]=""
+
+kable(limComp, "html",align=c(rep('c', 8))) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),position = "center")
+
+```

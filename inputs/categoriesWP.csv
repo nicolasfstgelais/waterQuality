@@ -1,0 +1,9 @@
+Lvl1,Lvl2,Keywords
+arsenic,arsenic,(?=.*(arsenic))(?=.*total)
+lead,lead,(?=.*(lead))(?=.*total)
+cadmium,cadmium,(?=.*(cadmium))(?=.*total)
+atrazine,atrazine,(?=.*(atrazine))(?=.*total)
+FC,FC,coli|fecal
+uranium,uranium,(?=.*(uranium))(?=.*total)
+tp,tp,(?=.*(phosphorus))(?=.*total)
+tn,tn,(?=.*(nitrogen))(?=.*total)

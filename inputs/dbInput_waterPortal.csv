@@ -1,0 +1,2 @@
+path,type,name,sheet,stationID,dateID,dateFormat,units,wideVar,wideResults,NAvalue,transpose,Notes,lineSkip
+C:/Users/nicol/Dropbox/ReseauLab/data/water quality/waterportal/rivers/result_mod.csv,csv,,,MonitoringLocationIdentifier,ActivityStartDate,A,ResultMeasure.MeasureUnitCode,CharacteristicName_ResultSampleFractionText,ResultMeasureValue,,,,0

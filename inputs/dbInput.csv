@@ -1,0 +1,3 @@
+path,type,name,sheet,stationID,dateID,dateFormat,units,wideVar,wideResults,NAvalue,transpose,Notes,lineSkip
+C:\Users\nicol\Dropbox\ReseauLab\data\BQMA\Yamaska.csv,csv,yamaska,,station,date,A,units,variable,value,,,,0
+C:\Users\nicol\Dropbox\ReseauLab\data\water quality\canadian rivers\Water-Qual-Eau-Columbia-2000-present.csv,csv,columbia,,SITE_NO,DATE_TIME_HEURE,A,UNIT_UNITE,VARIABLE,VALUE_VALEUR,,,,0

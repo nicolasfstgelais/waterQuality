@@ -1,0 +1,21 @@
+path,type,name,sheet,stationID,dateID,dateFormat,units,wideVar,wideResults,NAvalue,transpose,Notes,lineSkip
+C:\Users\nicol\Dropbox\ReseauLab\data\water quality\canadian rivers\Water-Qual-Eau-Columbia-2000-present.csv,csv,columbia,,SITE_NO,DATE_TIME_HEURE,A,UNIT_UNITE,VARIABLE,VALUE_VALEUR,,,,0
+C:\Users\nicol\Dropbox\ReseauLab\data\water quality\canadian rivers\water-qual-fresh-long-BC08MH0453-2013-01.csv,csv,fraser2013,,station_no,sample_datetime,A,unit_code,variable_name,value,NULL,,,0
+C:\Users\nicol\Dropbox\ReseauLab\data\water quality\canadian rivers\water-qual-fresh-long-BC08KA0001-2006-01.csv,csv,,,station_no,sample_datetime,A,unit_code,variable_name,value,NULL,,,0
+C:\Users\nicol\Dropbox\ReseauLab\data\water quality\canadian rivers\water-qual-fresh-long-BC08KA0007-2013-01.csv,csv,,,station_no,sample_datetime,A,unit_code,variable_name,value,NULL,,,0
+C:\Users\nicol\Dropbox\ReseauLab\data\water quality\canadian rivers\water-qual-fresh-long-BC08KA0071-2009-01.csv,csv,,,station_no,sample_datetime,A,unit_code,variable_name,value,NULL,,,0
+C:\Users\nicol\Dropbox\ReseauLab\data\water quality\canadian rivers\water-qual-fresh-long-BC08KE0010-2014-01.csv,csv,,,station_no,sample_datetime,A,unit_code,variable_name,value,NULL,,,0
+C:\Users\nicol\Dropbox\ReseauLab\data\water quality\canadian rivers\water-qual-fresh-long-BC08KH0012-2013-01.csv,csv,,,station_no,sample_datetime,A,unit_code,variable_name,value,NULL,,,0
+C:\Users\nicol\Dropbox\ReseauLab\data\water quality\canadian rivers\water-qual-fresh-long-BC08LC0005-2013-01.csv,csv,,,station_no,sample_datetime,A,unit_code,variable_name,value,NULL,,,0
+C:\Users\nicol\Dropbox\ReseauLab\data\water quality\canadian rivers\water-qual-fresh-long-BC08LE0001-1999-01.csv,csv,,,station_no,sample_datetime,A,unit_code,variable_name,value,NULL,,,0
+C:\Users\nicol\Dropbox\ReseauLab\data\water quality\canadian rivers\water-qual-fresh-long-BC08LF0001-2014-01.csv,csv,,,station_no,sample_datetime,A,unit_code,variable_name,value,NULL,,,0
+C:\Users\nicol\Dropbox\ReseauLab\data\water quality\canadian rivers\water-qual-fresh-long-BC08LG0001-2013-01.csv,csv,,,station_no,sample_datetime,A,unit_code,variable_name,value,NULL,,,0
+C:\Users\nicol\Dropbox\ReseauLab\data\water quality\canadian rivers\water-qual-fresh-long-BC08MB0007-2013-01.csv,csv,,,station_no,sample_datetime,A,unit_code,variable_name,value,NULL,,,0
+C:\Users\nicol\Dropbox\ReseauLab\data\water quality\canadian rivers\water-qual-fresh-long-BC08MH0453-2013-01.csv,csv,,,station_no,sample_datetime,A,unit_code,variable_name,value,NULL,,,0
+C:\Users\nicol\Dropbox\ReseauLab\data\water quality\canadian rivers\Water-Qual-Eau-Missouri-2000-present.csv,csv,,,SITE_NO,DATE_TIME_HEURE,A,UNIT_UNITE,VARIABLE,VALUE_VALEUR,-999999,,,0
+C:\Users\nicol\Dropbox\ReseauLab\data\water quality\canadian rivers\Water-Qual-Eau-Fraser-2000-present.csv,csv,,,SITE_NO,DATE_TIME_HEURE,A,UNIT_UNITE,VARIABLE,VALUE_VALEUR,-999999,,,0
+C:\Users\nicol\Dropbox\ReseauLab\data\water quality\canadian rivers\Water-Qual-Eau-Okanagan-Similkameen-2000-present.csv,csv,,,SITE_NO,DATE_TIME_HEURE,A,UNIT_UNITE,VARIABLE,VALUE_VALEUR,-999999,,,0
+C:\Users\nicol\Dropbox\ReseauLab\data\water quality\canadian rivers\Water-Qual-Eau-Peace-Athabasca-2000-present.csv,csv,,,SITE_NO,DATE_TIME_HEURE,A,UNIT_UNITE,VARIABLE,VALUE_VALEUR,-999999,,,0
+C:\Users\nicol\Dropbox\ReseauLab\data\water quality\canadian rivers\yamaska.csv,csv,,,StationNumber,SampleDate,A,MeasurementUnit,variable,MeasurementValue,<null>,,,0
+C:\Users\nicol\Dropbox\ReseauLab\data\water quality\canadian rivers\lavaltrie.csv,csv,,,StationNumber,SampleDate,A,MeasurementUnit,variable,MeasurementValue,<null>,,,0
+C:\Users\nicol\Dropbox\ReseauLab\data\water quality\canadian rivers\CdnRivMerged.csv,csv,,,StationNumber,SampleDate,A,MeasurementUnit,VariablePhase,MeasurementValue,<null>,,,0
