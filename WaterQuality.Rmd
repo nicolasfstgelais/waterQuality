@@ -18,10 +18,15 @@ Import the canadian rivers dataset data on stations and the canadian guidelines
 ```{r init data}
 library(knitr)
 library(kableExtra)
+library(ReporteRs)
+library(maps)
+library(ggplot2)
 rm(list=ls(all=TRUE))
 source("R/functions.R")
 load("data/dataCDN.RData")
-load("data/sitesClass.RData")
+load("data/sitesClassdoc.RData")
+load("data/critLimdoc.RData")
+
 ```
 
 ```{r import data}
@@ -43,6 +48,7 @@ for(i in unique(guide$SuperCategory)){
   } }
 
 par(mar = c(0.5, 6, 12, 0.5))
+plotHeatMap<- function(){
 plotrix::color2D.matplot(polCat,
                 show.values = TRUE,
                 axes = F,
@@ -57,14 +63,59 @@ axis(3, at = seq_len(ncol(polCat)) - 0.5,
 
 axis(2, at = seq_len(nrow(polCat)) -0.5,
      labels = rev(rownames(polCat)), tick = FALSE, las = 1, cex.axis = 1)
+}
+
+plotHeatMap()
+
+
+  ReporteRsWrap(plotHeatMap,"HeatMap")
+
 
 
 #kable(incMatrix, "html") %>%
  # kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 
 ```
+```{r map ,echo=F}
+
+#plotMap<- function(){
+world_map <- map_data("world", "Canada") 
+
+#Creat a base plot with gpplot2
+p <- ggplot() + coord_fixed() +
+  xlab("") + ylab("")
+
+cleanup <- 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
+        panel.background = element_rect(fill = "transparent",colour = NA),
+        plot.background = element_rect(fill = "transparent",colour = NA),
+        axis.line = element_line(colour = "white"), legend.position="none",
+        axis.ticks=element_blank(), axis.text.x=element_blank(),
+        axis.text.y=element_blank())
+
+points<-
+  geom_point(data=location, 
+             aes(x=long, y=lat), colour="black", 
+             fill="black",pch=21, size=1, alpha=I(0.6))
+
+#Add map to base plot
+base_world <- p + geom_polygon(data=world_map, aes(x=long, y=lat, group=group), 
+                                     colour="light blue", fill="light blue")+ cleanup  +points
+base_world
+
+#}
+
+plotMap<-function(){print(base_world)}
+
+  ppi=600
+  png("figures/mapCdn.png",width = 4, height = 5, units = 'in',bg="transparent",res=ppi)
+  print(base_world)
+  dev.off()
+
+  #ReporteRsWrap(plotMap,"mapCDN")
 
 
+```
 ### 2.Compare ecoservices in the dataset
 
 In this table, we compare the occurence of the different ecoservices in the dataset. On the diagonal of this table, the proportion of sites for which a given criteria was met is reported. Outside the diagonal we are reporting how often the column criteria is met when the row criteria is met. 
@@ -97,27 +148,41 @@ Because, the drinking and livestock criteria were met in the vast majority of sa
 In the ecoservices PCA, the first and second axes are mainly trophic axes, on which, all ecoservices are more associated with oligotrophic water. On the third axis, we see a strong association between recreational and irrgations services, and between aquatic wildlife and drinking, but a negative association between the two groups. By looking at the ecoservices guideline table, it make sense that aquatic wildlife and drinking are associated, as their respectives guidelines are similar, but it isn't the case for irrigation and recreation. 
 ```{r services PCA,echo=F}
 
-spaceSel=c("oligotrophic","mesotrophic","aquatic","irrigation","recreational","drink","eutrophic")
+spaceSel=c("DOC","oligotrophic","mesotrophic","aquatic","irrigation","recreational","drink","eutrophic","livestock")
 sel=which(rowSums(is.na(sitesClass[,spaceSel])) == 0)
 pca=prcomp(sitesClass[sel,spaceSel],center = T,scale. = T)
 
+impo=(summary(pca)$importance)
 # axes 1 and 2
+plotPCA12<-function(){
 axes=c(1,2)
 m=1
 sp=vegan::scores(pca,display = "species",choices=axes*m)
-plot(vegan::scores(pca,display = "species"),type="n",xlim=range(sp[,1]*1.1),ylab="PC2",xlab="PC1")
+plot(vegan::scores(pca,display = "species"),type="n",xlim=range(sp[,1]*1.1),xlab=paste0("PC1 (",round(impo[2,axes[1]],2)*100,"%)"),ylab=paste0("PC2 (",round(impo[2,axes[2]],2)*100,"%)"))
 text(sp,labels=rownames(sp),col="grey35")
 arrows(0,0,sp[,1]*0.85,sp[,2]*0.85,length=0.07)
 abline(h=0);abline(v=0)
+}
+plotPCA12()
+  ReporteRsWrap(plotPCA12,"PCA12")
 
-# axes 1 and 2
+# axes 2 and 3
+  plotPCA23<-function(){
 axes=c(2,3)
 m=1
 sp=vegan::scores(pca,display = "species",choices=axes*m)
-plot(vegan::scores(pca,display = "species"),type="n",xlim=range(sp[,1]*1.1),ylab="PC3",xlab="PC2")
+plot(vegan::scores(pca,display = "species"),type="n",xlim=range(sp[,1]*1.1),ylim=range(sp[,2]*1.1),xlab=paste0("PC1 (",round(impo[2,axes[1]],2)*100,"%)"),ylab=paste0("PC2 (",round(impo[2,axes[2]],2)*100,"%)"))
 text(sp,labels=rownames(sp),col="grey35")
 arrows(0,0,sp[,1]*0.85,sp[,2]*0.85,length=0.07)
 abline(h=0);abline(v=0)
+}
+  plotPCA23()
+  ReporteRsWrap(plotPCA23,"PCA23")
+
+
+```
+
+```{r categories PCA,echo=F}
 
 
 ```
@@ -128,7 +193,7 @@ abline(h=0);abline(v=0)
 In this table we compare the limiting guidelines for each ecoservice. For each guideline, we report how often when a sample cannot provide an ecoservice a specific guideline responsible for the none compliance. 
 For trophic status, when a sample change from one trophic status to the other, TN and TP are almost always both over the guideline (Even if TP was measure more often)
 ```{r compaare limiting,echo=F}
-limComp=round(limFreqTable/limTotTable,2)
+limComp=round(critLim,2)
 limComp=limComp[order(rowSums(limComp,na.rm = T),decreasing = T),]
 
 limComp[is.nan(limComp)]=""

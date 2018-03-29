@@ -157,7 +157,7 @@ DBnorm<- function(inputFile = "dbInput_cdnRiv.csv",catFile="inputs/categories.cs
    }
     
     
-    j = "Alkalinity"
+    j = "doc"
     lvl="Lvl2"
     cats=LtoC(unique(categories[,lvl]))
     lvl1=(categories[,"Lvl1"])
@@ -176,7 +176,7 @@ DBnorm<- function(inputFile = "dbInput_cdnRiv.csv",catFile="inputs/categories.cs
     }
     
     rowSel=NULL
-    j="fc"
+    j="dicamba"
     for (j in cats) {
       # loop to search for the kerwords in order, maybe switch from | to  ; between keywords
       
@@ -210,6 +210,9 @@ DBnorm<- function(inputFile = "dbInput_cdnRiv.csv",catFile="inputs/categories.cs
       db[(db[,input$wideVar[i]])%in% searchVec[colsTemp],input$wideVar[i]]=parameters[c3,"ctrl"]
       c3=c3+1
       #log names
+      #print(paste("\t",j,":",pattList[r]))
+      #print(paste("\t\t",searchVec[colsTemp]))
+      
       cat(paste("\t",j,":",pattList[r]), file=fileName, append=T, sep = "\n")
       cat(paste("\t\t",searchVec[colsTemp]), file=fileName, append=T, sep = "\n")
     }
@@ -251,7 +254,7 @@ DBnorm<- function(inputFile = "dbInput_cdnRiv.csv",catFile="inputs/categories.cs
     if(i!=1)dbMerged=rbind(dbMerged,db[,c("station","date","variable",'value',"units","ym")])
   
   }
-  write.csv(x = dbMerged,paste0(output,"_norm.csv"))
+  write.csv(x = dbMerged,paste0("data/",output,"_norm.csv"))
 }
 
 

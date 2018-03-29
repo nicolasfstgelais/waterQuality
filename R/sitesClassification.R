@@ -17,8 +17,8 @@ db_wide=get(db_wide)
 selVar=colnames(db_wide)
 
 # forced to have fc measures
-#db_wide=db_wide[!is.na(db_wide$fc),]
-db_wide=db_wide[1:100,]
+db_wide=db_wide[!is.na(db_wide$fc),]
+#db_wide=db_wide[1:100,]
 
 
 sitesClass=matrix(NA,nrow(db_wide),length(selSpaces),dimnames=list(rownames(db_wide),selSpaces))
@@ -35,6 +35,7 @@ for(i in rownames(sitesClass)){
     incUp=NA
     crit=NULL
     critLim=NULL
+    enviro=db_wide[i,]
     for(m in selVar ){
       upper=LtoN(guide[guide$Pollutant==m&guide$Category==j&guide$Limit=="upper","Concentration"])
       lower=LtoN(guide[guide$Pollutant==m&guide$Category==j&guide$Limit=="lower","Concentration"])
@@ -44,7 +45,7 @@ for(i in rownames(sitesClass)){
       if(length( upper)==0)upper=Inf
       if(length(lower)==0)lower=0
       if(db_wide[i,m]<upper){incUp=min(incUp,1,na.rm = T)}
-      if(db_wide[i,m]<lower){
+      if(enviro[,m]<lower){
         incLow=max(incLow,0,na.rm = T)
         critLim[length(critLim)+1]=m}
       if(db_wide[i,m]>=upper){
@@ -62,7 +63,7 @@ for(i in rownames(sitesClass)){
     #}
     
   }
-  print(c);
+  #print(c);
   c=c+1
   setTxtProgressBar(pb, c)
 }

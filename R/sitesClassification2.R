@@ -13,12 +13,14 @@ registerDoSNOW(cl)
 # class 
 
 
-import="data/dataCDN.RData"
+import="data/dataCDNdoc.RData"
 db_wide="db_wide_ym"
 selSpaces=c("oligotrophic","mesotrophic","eutrophic","aquatic","recreational","drink","irrigation","livestock")
+#selSpaces=c("livestock")
 
+selOut="doc"
 
-sitesClassification<-function(import,db_wide,selSpaces)
+sitesClassification<-function(import,db_wide,selSpaces,selOut="")
 {
 source("R/functions.R")
 load(import)
@@ -27,7 +29,8 @@ selVar=colnames(db_wide)
 
 # forced to have fc measures
 #db_wide=db_wide[!is.na(db_wide$fc),]
-#db_wide=db_wide[1:1000,]
+#load(paste0("data/sitesClass",selOut,".RData"))
+
 
 
 sitesClass=matrix(NA,nrow(db_wide),length(selSpaces),dimnames=list(rownames(db_wide),selSpaces))
@@ -43,6 +46,10 @@ opts <- list(progress = progress)
 class=rep(NA,length(selSpaces));names(class)=selSpaces
 
 sitesClass_raw=list()
+critLim=matrix(NA,length(selSpaces),length(selVar),dimnames=list(selSpaces,selVar))
+
+indic<-function(x)length(which(is.nan(x)))/(length(which(is.nan(x)))+(length(which(is.infinite(x)))))
+
 
 for(j in selSpaces){
 
@@ -52,6 +59,8 @@ registerDoSNOW(cl)
 
 subGuide=guide[guide$Pollutant%in%selVar&guide$Category==j,]
 subGuide$Concentration=LtoN(subGuide$Concentration)
+
+
 
 x <-foreach(i=rownames(db_wide), .combine='rbind',.options.snow = opts) %:%
   #Sys.sleep(0.1)
@@ -94,31 +103,44 @@ x <-foreach(i=rownames(db_wide), .combine='rbind',.options.snow = opts) %:%
 colnames(x)=selVar
 sitesClass_raw[[j]]=x
 
+if(file.exists(paste0("data/sitesClass",selOut,".RData"))){
+  load(paste0("data/sitesClass",selOut,".RData"))
+  
+  if(j%in%colnames(sitesClass))
+  {
+    sitesClass[,j]=apply(x,1,min,na.rm=T)
+    sitesClass[is.infinite(sitesClass)]=NA
+    
+  }
+  if(!j%in%colnames(sitesClass))
+  {
+    sitesClass=cbind(sitesClass,apply(x,1,min,na.rm=T))
+    colnames(sitesClass)[ncol(sitesClass)]=j
+    sitesClass[is.infinite(sitesClass)]=NA
+    }
+  }
+
+
+#-save(sitesClass,sitesClass_raw,critLim,file=paste0("data/sitesClass",selOut,".RData"))
+
+save(sitesClass,file=paste0("data/sitesClass",selOut,".RData"))
+
+
+
+s=sweep(sitesClass_raw[[j]],MARGIN=1,sitesClass[,j],`/`)
+temp=apply(s,2,indic)
+temp[is.nan(temp)]=NA
+critLim[j,]=temp
+
 stopCluster(cl)
+print(j)
 }
 
-sitesClass[,j]=apply(x,1,min,na.rm=T)
-sitesClass[is.infinite(sitesClass)]=NA
-
-
-
-#sitesClass[i,j]=min(incUp,incLow)
-    #data.frame(sitesClass)
-    if(!is.na(min(incUp,incLow))&min(incUp,incLow)==0){
-      #limTotTable[crit[!is.na(db_wide[i,crit])],j]=  limTotTable[crit[!is.na(db_wide[i,crit])],j]+1
-      #limFreqTable[critLim[!is.na(db_wide[i,critLim])],j]=  limFreqTable[critLim[!is.na(db_wide[i,critLim])],j]+1
-    }
-    #}
- #   setTxtProgressBar(pb, c)
-  #  print(c);
-   # c=c+1
-  }
- 
-
-
+save(sitesClass_raw,file=paste0("data/sitesClass_raw",selOut,".RData"))
+save(critLim,file=paste0("data/critLim",selOut,".RData"))
 close(pb)
 
 
-save(sitesClass,limFreqTable,limTotTable,file="data/sitesClass.RData")
 }
+
 

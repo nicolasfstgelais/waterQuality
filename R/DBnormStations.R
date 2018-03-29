@@ -99,7 +99,7 @@ DBnormStations<- function(inputFile = "dbInputStations.csv")
     if(i!=1)dbMerged=rbind(dbMerged,db[,c("station","latitude","longitude")])
   
   }
-  write.csv(x = dbMerged,paste0("stations_norm.csv"),row.names = F)
+  write.csv(x = dbMerged,paste0("data/stations_norm.csv"),row.names = F)
 }
 
 

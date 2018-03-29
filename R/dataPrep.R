@@ -4,9 +4,11 @@ rm(list=ls(all=TRUE))
 dbPath="data/cdnRiv_norm.csv"
 stationsPath="data/stations_norm.csv"
 guidePath="data/CDN_guidelines.csv"
-outputPath="data/dataCDN.RData"
+outputPath="data/dataCDN"
 
-dataPrep <- function(dbPath,stationsPath,guidePath,outputPath)
+selOut="DOC"
+
+dataPrep <- function(dbPath,stationsPath,guidePath,outputPath,selOut="")
 {
 ## Read files
 source("R/functions.R")
@@ -83,8 +85,26 @@ db_wide_d=db_wide_d[,-c(1,2)]
 rownames(db_wide_m)=paste0(db_wide_m$station,db_wide_m$mo)
 db_wide_m=db_wide_m[,-c(1,2)]
 
+sites=unique(stringr::str_sub(rownames(db_wide_ym),start=0,end=-7))
 
-save(db_wide_m,db_wide_d,db_wide_ym,stations,guide,file=outputPath)
+location=matrix(NA,length(sites),2,dimnames=list(sites,c("long","lat")))
+
+for(i in rownames(location))
+{
+  if(length(stations[i,"latitude"])==0)next
+  location[i,"lat"]=stations[i,"latitude"]
+  location[i,"long"]=stations[i,"longitude"]
+}
+location=as.data.frame(location)
+
+if(nchar(selOut)>0){
+  db_wide_ym=db_wide_ym[!is.na(db_wide_ym[,selOut]),]
+  db_wide_m=db_wide_m[!is.na(db_wide_m[,selOut]),]
+  db_wide_d=db_wide_d[!is.na(db_wide_d[,selOut]),]
+}
+
+
+save(db_wide_m,db_wide_d,db_wide_ym,stations,guide,location,file=paste0(outputPath,selOut,".RData"))
 }
 
 

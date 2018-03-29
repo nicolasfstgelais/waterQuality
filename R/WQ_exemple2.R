@@ -1,4 +1,3 @@
-rm(list=ls(all=TRUE))
 
 options(scipen=999)
 #library(vegan)
@@ -113,13 +112,30 @@ db_wide=db_wide[!is.na(db_wide$tn),]
 
 
 
-sel="drink"
+sel="oligotrophic"
 
-rfData=db_wide[!is.na(sitesClass[,sel]),]
+rfData=db_wide_ym[!is.na(sitesClass[,sel]),]
+rfData=db_wide_ym
+
 
 #only keep variables with less than 50% of missing value
 rfData=rfData[,colSums(is.na(rfData)) <0.75*nrow(rfData)]
-rfData$oligotrophic=sitesClass[rownames(rfData),sel]
+#rfData$oligotrophic=
+
+Y=sitesClass[rownames(rfData),sel]
+X=rfData
+
+slices <- 8 
+idx <- rep(1:slices, each = ceiling(nrow(X)/slices))
+idx <- idx[1:nrow(X)]
+
+cl <- makeCluster(8)
+clusterExport(cl, c('idx', 'slices', 'X','Y'))
+imputedData <- do.call('rbind', parLapply(cl, 1:slices, function(SLICE){
+  require(randomForest)
+  rfImpute(X[idx == SLICE, ], Y[idx == SLICE])
+}))
+stopCluster(cl)
 
 rfData.imp=randomForest::rfImpute(oligotrophic ~ .,data=rfData)
 rf=randomForest::randomForest(oligotrophic ~ .,data=rfDataImputed)
@@ -267,15 +283,22 @@ db_wide_na[grep("AL07AA0015",x = rownames(db_wide_na)),]
 
 sel1=grep("AL11AA0003",x = rownames(db_wide_na))
 sel2=grep("QU02OB9004",x = rownames(db_wide_na))
-sel3=grep("BC08KE0010",x = rownames(db_wide_na))
+sel3=grep("BC08KE0010",x = rownames(db_wide_ym))
 
 v=db_wide[grep("BC08KE0010",x = rownames(db_wide)),]
 v2=sitesClass[grep("BC08KE0010",x = rownames(sitesClass)),]
 
+db_sel=db_wide_ym[sel3,]
+db_sel=db_sel[,colSums(is.na(db_sel)) != nrow(db_sel)]
+
+imp=missForest::missForest(db_sel)
+db_sel.imp=imp$ximp
 #pca
 axes=c(1,2)
 sc=2
-pca=prcomp(db_wide_na[sel2,selPol],center = TRUE,scale. = TRUE)
+pca=prcomp(db_sel.imp,center = TRUE,scale. = TRUE)
+
+
 
 library(animation)
 
@@ -454,7 +477,7 @@ location=matrix(NA,nrow(sitesClass),2,dimnames=list(rownames(sitesClass),c("long
 
 for(i in rownames(location))
 {
-  site=stringr::str_sub(i,start=0,end=-3)
+  site=stringr::str_sub(i,start=0,end=-7)
   if(length(stations[site,"latitude"])==0)next
   location[i,"lat"]=stations[site,"latitude"]
   location[i,"long"]=stations[site,"longitude"]
