@@ -2,7 +2,7 @@
 title: "Exploring water quality"
 author: "Nicolas F. S-Gelais"
 date: "`r Sys.Date()`"
-output: github_document
+output: html_document
 ---
 
 ```{r global_options, include=FALSE}
@@ -20,12 +20,16 @@ library(knitr)
 library(kableExtra)
 library(ReporteRs)
 library(maps)
+library(fmsb)
 library(ggplot2)
+library(tidyr)
 rm(list=ls(all=TRUE))
 source("R/functions.R")
 load("data/dataCDN.RData")
-load("data/sitesClassdoc.RData")
+load("data/sitesClassfc.RData")
 load("data/critLimdoc.RData")
+colFreq<-function(x)sum(!is.na(x))/length(x)
+
 
 ```
 
@@ -116,13 +120,35 @@ plotMap<-function(){print(base_world)}
 
 
 ```
+```{r guidelines table ,echo=F}
+freq=apply(db_wide_ym,2,colFreq)
+
+colFreq(db_wide_ym$fc)
+
+
+guide.sub=guide[guide$Pollutant%in%colnames(db_wide_ym)&guide$Limit=="upper",]
+guide.wide=spread(guide.sub[,c("Category","Chemical.groups","Pollutant","Concentration")],Category,Concentration)
+
+guide.wide=guide.wide[order(guide.wide$Pollutant),]
+guide.wide=guide.wide[order(guide.wide$Chemical.groups),]
+freq=round(freq[guide.wide$Pollutant],4)*100
+guide.wide=cbind(freq,guide.wide)
+rownames(guide.wide)=guide.wide$Pollutant;guide.wide$Pollutant=NULL
+
+
+kable(guide.wide, "html") %>%
+  kable_styling(position="center",bootstrap_options = c("striped", "hover", "condensed"))
+
+```
+
 ### 2.Compare ecoservices in the dataset
 
 In this table, we compare the occurence of the different ecoservices in the dataset. On the diagonal of this table, the proportion of sites for which a given criteria was met is reported. Outside the diagonal we are reporting how often the column criteria is met when the row criteria is met. 
 
 ```{r inclusion matrix ,echo=F}
 incMatrix=matrix(NA,ncol(sitesClass),ncol(sitesClass),dimnames=list(colnames(sitesClass),colnames(sitesClass)))
-
+i="recreational"
+j="drinking"
 for(i in colnames(incMatrix)){
   for(j in colnames(incMatrix)){
     if(i==j){incMatrix[i,j]=round(sum(sitesClass[,i],na.rm = T)/nrow(sitesClass[!is.na(sitesClass[,i]),]),2 )}  else{
@@ -139,7 +165,45 @@ In this dataset, `r incMatrix["oligotrophic","oligotrophic"]*100` % of sites wer
 
 When the water is oligotrophic are more often suitable for aquatic life (`r incMatrix["oligotrophic","aquatic"]*100`%), recreation (`r incMatrix["oligotrophic","recreational"]*100`%), drinking (`r incMatrix["oligotrophic","drink"]*100`%) and irrigation (`r incMatrix["oligotrophic","irrigation"]*100`%) than mesotrpohic and eutrophic samples. 
 
-Because, the drinking and livestock criteria were met in the vast majority of samples, they were not included in the analyses.  
+Because, the drinking and livestock criteria were met in the vast majority of samples, they were not included in the analyses. 
+
+```{r radar plot  ,echo=F}
+library(colourpicker)
+#plotHelper()
+col2rgb("#1DCF1D")/250
+radar.dat=incMatrix[c("oligotrophic","mesotrophic","eutrophic"),c("aquatic","recreational", "drink", "irrigation", "livestock")]
+radar.dat=as.data.frame(rbind(rep(1,ncol(radar.dat)) , rep(0.01,ncol(radar.dat)) , radar.dat))
+colors_border=c( rgb(0.112,0.56,0.876,0.9), rgb(0.18,0.796,0.828,0.9) , rgb(0.204,0.64,0.176,0.9) )
+colors_in=c( rgb(0.112,0.56,0.876,0.2), rgb(0.18,0.796,0.828,0.2) , rgb(0.204,0.64,0.176,0.2) )
+radarchart( radar.dat  , axistype=1 , 
+            #custom polygon
+            pcol=colors_border , pfcol=colors_in , plwd=4 , plty=1,
+            #custom the grid
+            cglcol="grey", cglty=1, axislabcol="grey", caxislabels=seq(0,100,25), cglwd=0.8,
+            #custom labels
+            vlcex=0.8
+)
+legend(x=1, y=1.2, legend = rownames(radar.dat[-c(1,2),]), bty = "n", pch=20 , col=colors_border , text.col = "grey32", cex=1.2, pt.cex=3)
+
+
+radar.dat=incMatrix[c("aquatic","recreational", "drink", "irrigation", "livestock"),c("aquatic","recreational", "drink", "irrigation", "livestock")]
+
+radar.dat[c(1),c(1)]=0;radar.dat[c(2),c(2)]=0;radar.dat[c(3),c(3)]=0;radar.dat[c(4),c(4)]=0;radar.dat[c(5),c(5)]=0
+
+colors_border=c( rgb(0.112,0.56,0.876,0.9), rgb(0.18,0.796,0.828,0.9) , rgb(0.204,0.64,0.176,0.9),rgb(0.116,0.828,0.116,0.9),rgb(0.908,0.104,0.112,0.9) )
+colors_in=c( rgb(0.112,0.56,0.876,0.2), rgb(0.18,0.796,0.828,0.2) , rgb(0.204,0.64,0.176,0.2),rgb(0.116,0.828,0.116,0.2),rgb(0.908,0.104,0.112,0.2)  )
+
+radar.dat=as.data.frame(rbind(rep(1,ncol(radar.dat)) , rep(0.01,ncol(radar.dat)) , radar.dat))
+radarchart( radar.dat  , axistype=1 , 
+            #custom polygon
+            pcol=colors_border , pfcol=colors_in , plwd=4 , plty=1,
+            #custom the grid
+            cglcol="grey", cglty=1, axislabcol="grey", caxislabels=seq(0,100,25), cglwd=0.8,
+            #custom labels
+            vlcex=0.8
+)
+legend(x=1, y=1.2, legend = rownames(radar.dat[-c(1,2),]), bty = "n", pch=20 , col=colors_border , text.col = "grey32", cex=1.2, pt.cex=3)
+```
 
 
 #### Ecoservices PCA
@@ -148,7 +212,7 @@ Because, the drinking and livestock criteria were met in the vast majority of sa
 In the ecoservices PCA, the first and second axes are mainly trophic axes, on which, all ecoservices are more associated with oligotrophic water. On the third axis, we see a strong association between recreational and irrgations services, and between aquatic wildlife and drinking, but a negative association between the two groups. By looking at the ecoservices guideline table, it make sense that aquatic wildlife and drinking are associated, as their respectives guidelines are similar, but it isn't the case for irrigation and recreation. 
 ```{r services PCA,echo=F}
 
-spaceSel=c("DOC","oligotrophic","mesotrophic","aquatic","irrigation","recreational","drink","eutrophic","livestock")
+spaceSel=c("oligotrophic","mesotrophic","aquatic","irrigation","recreational","drink","eutrophic","livestock")
 sel=which(rowSums(is.na(sitesClass[,spaceSel])) == 0)
 pca=prcomp(sitesClass[sel,spaceSel],center = T,scale. = T)
 
@@ -192,13 +256,19 @@ abline(h=0);abline(v=0)
 
 In this table we compare the limiting guidelines for each ecoservice. For each guideline, we report how often when a sample cannot provide an ecoservice a specific guideline responsible for the none compliance. 
 For trophic status, when a sample change from one trophic status to the other, TN and TP are almost always both over the guideline (Even if TP was measure more often)
-```{r compaare limiting,echo=F}
+```{r compaare limiting,echo=F,results='asis'}
 limComp=round(critLim,2)
 limComp=limComp[order(rowSums(limComp,na.rm = T),decreasing = T),]
 
 limComp[is.nan(limComp)]=""
 
-kable(limComp, "html",align=c(rep('c', 8))) %>%
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),position = "center")
+for(i in 1:nrow(limComp)){
+  temp=t(limComp[i,,drop=F])
+  temp=temp[!is.na(temp),,drop=F]
+ # temp=as.numeric(temp[,1])
+  temp=temp[order(temp[,1,drop=F],decreasing = T),,drop=F]
+print(kable(temp, "html",align=c(rep('c', 8))) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),position = "center",full_width = F))
+}
 
 ```

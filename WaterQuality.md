@@ -1,7 +1,7 @@
 Exploring water quality
 ================
 Nicolas F. S-Gelais
-2018-03-29
+2018-05-07
 
 ### Read files
 
@@ -12,12 +12,15 @@ library(knitr)
 library(kableExtra)
 library(ReporteRs)
 library(maps)
+library(fmsb)
 library(ggplot2)
+library(tidyr)
 rm(list=ls(all=TRUE))
 source("R/functions.R")
 load("data/dataCDN.RData")
-load("data/sitesClassdoc.RData")
+load("data/sitesClassfc.RData")
 load("data/critLimdoc.RData")
+colFreq<-function(x)sum(!is.na(x))/length(x)
 ```
 
 ### 1. Compare ecoservices guidelines
@@ -31,6 +34,749 @@ In this table, we compare the proportion of guidelines in each group (columns) t
     ## png 
     ##   2
 
+    ## [1] 0.08627159
+
+<table class="table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+freq
+</th>
+<th style="text-align:left;">
+Chemical.groups
+</th>
+<th style="text-align:left;">
+aquatic
+</th>
+<th style="text-align:left;">
+drink
+</th>
+<th style="text-align:left;">
+irrigation
+</th>
+<th style="text-align:left;">
+livestock
+</th>
+<th style="text-align:left;">
+mesotrophic
+</th>
+<th style="text-align:left;">
+oligotrophic
+</th>
+<th style="text-align:left;">
+recreational
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+fc
+</td>
+<td style="text-align:right;">
+8.63
+</td>
+<td style="text-align:left;">
+Biological
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+11
+</td>
+<td style="text-align:left;">
+100
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+200
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+chloride
+</td>
+<td style="text-align:right;">
+76.78
+</td>
+<td style="text-align:left;">
+Inorganic chemical
+</td>
+<td style="text-align:left;">
+120000
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+fluoride
+</td>
+<td style="text-align:right;">
+15.51
+</td>
+<td style="text-align:left;">
+Inorganic chemical
+</td>
+<td style="text-align:left;">
+120
+</td>
+<td style="text-align:left;">
+1500
+</td>
+<td style="text-align:left;">
+1000
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nitrate
+</td>
+<td style="text-align:right;">
+73.65
+</td>
+<td style="text-align:left;">
+Inorganic chemical
+</td>
+<td style="text-align:left;">
+13000
+</td>
+<td style="text-align:left;">
+45000
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nitrite
+</td>
+<td style="text-align:right;">
+80.73
+</td>
+<td style="text-align:left;">
+Inorganic chemical
+</td>
+<td style="text-align:left;">
+11820
+</td>
+<td style="text-align:left;">
+3000
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+10000
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+arsenic
+</td>
+<td style="text-align:right;">
+23.99
+</td>
+<td style="text-align:left;">
+Metal
+</td>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+10
+</td>
+<td style="text-align:left;">
+100
+</td>
+<td style="text-align:left;">
+25
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+cadmium
+</td>
+<td style="text-align:right;">
+60.02
+</td>
+<td style="text-align:left;">
+Metal
+</td>
+<td style="text-align:left;">
+0.09
+</td>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+5.1
+</td>
+<td style="text-align:left;">
+80
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+copper
+</td>
+<td style="text-align:right;">
+75.98
+</td>
+<td style="text-align:left;">
+Metal
+</td>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+iron
+</td>
+<td style="text-align:right;">
+77.20
+</td>
+<td style="text-align:left;">
+Metal
+</td>
+<td style="text-align:left;">
+300
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+5000
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+lead
+</td>
+<td style="text-align:right;">
+48.54
+</td>
+<td style="text-align:left;">
+Metal
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+10
+</td>
+<td style="text-align:left;">
+200
+</td>
+<td style="text-align:left;">
+100
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+molybdenum
+</td>
+<td style="text-align:right;">
+59.11
+</td>
+<td style="text-align:left;">
+Metal
+</td>
+<td style="text-align:left;">
+73
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+500
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nickel
+</td>
+<td style="text-align:right;">
+62.00
+</td>
+<td style="text-align:left;">
+Metal
+</td>
+<td style="text-align:left;">
+25
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+200
+</td>
+<td style="text-align:left;">
+1000
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+uranium
+</td>
+<td style="text-align:right;">
+25.82
+</td>
+<td style="text-align:left;">
+Metal
+</td>
+<td style="text-align:left;">
+15
+</td>
+<td style="text-align:left;">
+20
+</td>
+<td style="text-align:left;">
+10
+</td>
+<td style="text-align:left;">
+200
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+zinc
+</td>
+<td style="text-align:right;">
+75.33
+</td>
+<td style="text-align:left;">
+Metal
+</td>
+<td style="text-align:left;">
+30
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+50000
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+tn
+</td>
+<td style="text-align:right;">
+28.42
+</td>
+<td style="text-align:left;">
+Nutrients
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+1500
+</td>
+<td style="text-align:left;">
+700
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+tp
+</td>
+<td style="text-align:right;">
+96.10
+</td>
+<td style="text-align:left;">
+Nutrients
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+75
+</td>
+<td style="text-align:left;">
+25
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+toluene
+</td>
+<td style="text-align:right;">
+0.36
+</td>
+<td style="text-align:left;">
+Organic chemical
+</td>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:left;">
+60
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+24
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+atrazine
+</td>
+<td style="text-align:right;">
+0.01
+</td>
+<td style="text-align:left;">
+Pesticide
+</td>
+<td style="text-align:left;">
+1.8
+</td>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+10
+</td>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+bromoxynil
+</td>
+<td style="text-align:right;">
+0.00
+</td>
+<td style="text-align:left;">
+Pesticide
+</td>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+0.33
+</td>
+<td style="text-align:left;">
+11
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dicamba
+</td>
+<td style="text-align:right;">
+0.00
+</td>
+<td style="text-align:left;">
+Pesticide
+</td>
+<td style="text-align:left;">
+10
+</td>
+<td style="text-align:left;">
+120
+</td>
+<td style="text-align:left;">
+0.006
+</td>
+<td style="text-align:left;">
+122
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+metolachlor
+</td>
+<td style="text-align:right;">
+0.12
+</td>
+<td style="text-align:left;">
+Pesticide
+</td>
+<td style="text-align:left;">
+7.8
+</td>
+<td style="text-align:left;">
+50
+</td>
+<td style="text-align:left;">
+28
+</td>
+<td style="text-align:left;">
+50
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+simazine
+</td>
+<td style="text-align:right;">
+0.11
+</td>
+<td style="text-align:left;">
+Pesticide
+</td>
+<td style="text-align:left;">
+10
+</td>
+<td style="text-align:left;">
+10
+</td>
+<td style="text-align:left;">
+0.5
+</td>
+<td style="text-align:left;">
+10
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+</tbody>
+</table>
 ### 2.Compare ecoservices in the dataset
 
 In this table, we compare the occurence of the different ecoservices in the dataset. On the diagonal of this table, the proportion of sites for which a given criteria was met is reported. Outside the diagonal we are reporting how often the column criteria is met when the row criteria is met.
@@ -64,9 +810,6 @@ irrigation
 <th style="text-align:right;">
 livestock
 </th>
-<th style="text-align:right;">
-DOC
-</th>
 </tr>
 </thead>
 <tbody>
@@ -75,7 +818,7 @@ DOC
 oligotrophic
 </td>
 <td style="text-align:right;">
-0.49
+0.32
 </td>
 <td style="text-align:right;">
 0.00
@@ -84,22 +827,19 @@ oligotrophic
 0.00
 </td>
 <td style="text-align:right;">
-0.45
+0.29
 </td>
 <td style="text-align:right;">
-0.99
+0.85
 </td>
 <td style="text-align:right;">
-0.37
+0.25
 </td>
 <td style="text-align:right;">
-1.00
+0.71
 </td>
 <td style="text-align:right;">
 1
-</td>
-<td style="text-align:right;">
-0.93
 </td>
 </tr>
 <tr>
@@ -110,28 +850,25 @@ mesotrophic
 0.00
 </td>
 <td style="text-align:right;">
-0.19
+0.39
 </td>
 <td style="text-align:right;">
 0.00
 </td>
 <td style="text-align:right;">
-0.11
+0.20
 </td>
 <td style="text-align:right;">
-0.93
+0.69
 </td>
 <td style="text-align:right;">
-0.61
+0.14
 </td>
 <td style="text-align:right;">
-0.99
+0.52
 </td>
 <td style="text-align:right;">
 1
-</td>
-<td style="text-align:right;">
-0.76
 </td>
 </tr>
 <tr>
@@ -145,25 +882,22 @@ eutrophic
 0.00
 </td>
 <td style="text-align:right;">
-0.17
+0.18
 </td>
 <td style="text-align:right;">
-0.04
+0.09
 </td>
 <td style="text-align:right;">
-0.60
+0.31
 </td>
 <td style="text-align:right;">
-0.42
+0.05
 </td>
 <td style="text-align:right;">
-0.91
+0.22
 </td>
 <td style="text-align:right;">
 1
-</td>
-<td style="text-align:right;">
-0.59
 </td>
 </tr>
 <tr>
@@ -171,31 +905,28 @@ eutrophic
 aquatic
 </td>
 <td style="text-align:right;">
-0.83
+0.44
+</td>
+<td style="text-align:right;">
+0.37
 </td>
 <td style="text-align:right;">
 0.08
 </td>
 <td style="text-align:right;">
-0.02
+0.22
 </td>
 <td style="text-align:right;">
-0.26
+0.81
 </td>
 <td style="text-align:right;">
-0.99
+0.22
 </td>
 <td style="text-align:right;">
-0.21
-</td>
-<td style="text-align:right;">
-1.00
+0.66
 </td>
 <td style="text-align:right;">
 1
-</td>
-<td style="text-align:right;">
-0.93
 </td>
 </tr>
 <tr>
@@ -203,31 +934,28 @@ aquatic
 recreational
 </td>
 <td style="text-align:right;">
-0.62
-</td>
-<td style="text-align:right;">
-0.13
-</td>
-<td style="text-align:right;">
-0.12
-</td>
-<td style="text-align:right;">
 0.41
 </td>
 <td style="text-align:right;">
-0.90
+0.40
 </td>
 <td style="text-align:right;">
-0.00
+0.08
 </td>
 <td style="text-align:right;">
-1.00
+0.26
+</td>
+<td style="text-align:right;">
+0.66
+</td>
+<td style="text-align:right;">
+0.23
+</td>
+<td style="text-align:right;">
+0.78
 </td>
 <td style="text-align:right;">
 1
-</td>
-<td style="text-align:right;">
-0.84
 </td>
 </tr>
 <tr>
@@ -235,31 +963,28 @@ recreational
 drink
 </td>
 <td style="text-align:right;">
-0.40
+0.52
 </td>
 <td style="text-align:right;">
-0.26
+0.36
 </td>
 <td style="text-align:right;">
-0.16
+0.05
 </td>
 <td style="text-align:right;">
-0.12
+0.30
 </td>
 <td style="text-align:right;">
 1.00
 </td>
 <td style="text-align:right;">
-0.43
+0.15
 </td>
 <td style="text-align:right;">
-0.99
+1.00
 </td>
 <td style="text-align:right;">
 1
-</td>
-<td style="text-align:right;">
-0.87
 </td>
 </tr>
 <tr>
@@ -267,31 +992,28 @@ drink
 irrigation
 </td>
 <td style="text-align:right;">
-0.50
-</td>
-<td style="text-align:right;">
-0.19
-</td>
-<td style="text-align:right;">
-0.16
-</td>
-<td style="text-align:right;">
-0.25
-</td>
-<td style="text-align:right;">
-0.93
-</td>
-<td style="text-align:right;">
 0.44
 </td>
 <td style="text-align:right;">
-0.97
+0.39
+</td>
+<td style="text-align:right;">
+0.07
+</td>
+<td style="text-align:right;">
+0.27
+</td>
+<td style="text-align:right;">
+1.00
+</td>
+<td style="text-align:right;">
+0.30
+</td>
+<td style="text-align:right;">
+0.51
 </td>
 <td style="text-align:right;">
 1
-</td>
-<td style="text-align:right;">
-0.85
 </td>
 </tr>
 <tr>
@@ -299,72 +1021,44 @@ irrigation
 livestock
 </td>
 <td style="text-align:right;">
-0.49
+0.33
 </td>
 <td style="text-align:right;">
-0.19
+0.39
 </td>
 <td style="text-align:right;">
-0.17
+0.18
 </td>
 <td style="text-align:right;">
-0.26
+0.22
 </td>
 <td style="text-align:right;">
-0.90
+0.67
 </td>
 <td style="text-align:right;">
-0.45
+0.16
 </td>
 <td style="text-align:right;">
-0.97
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.85
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-DOC
-</td>
-<td style="text-align:right;">
-0.54
-</td>
-<td style="text-align:right;">
-0.17
-</td>
-<td style="text-align:right;">
-0.12
-</td>
-<td style="text-align:right;">
-0.29
-</td>
-<td style="text-align:right;">
-0.92
-</td>
-<td style="text-align:right;">
-0.45
-</td>
-<td style="text-align:right;">
-0.98
+0.52
 </td>
 <td style="text-align:right;">
 1
-</td>
-<td style="text-align:right;">
-0.84
 </td>
 </tr>
 </tbody>
 </table>
-In this dataset, 49 % of sites were oligotrophic, 19 % mesotrophic and 17% eutrophic. Only 26% of the samples were suitable for aquatic life, 90% for swimming and 43% for drinking. For gricultural use, in 97% of the samples the water was usable for irrigation and 100% for livestock.
+In this dataset, 32 % of sites were oligotrophic, 39 % mesotrophic and 18% eutrophic. Only 22% of the samples were suitable for aquatic life, 66% for swimming and 15% for drinking. For gricultural use, in 51% of the samples the water was usable for irrigation and 100% for livestock.
 
-When the water is oligotrophic are more often suitable for aquatic life (45%), recreation (99%), drinking (37%) and irrigation (100%) than mesotrpohic and eutrophic samples.
+When the water is oligotrophic are more often suitable for aquatic life (29%), recreation (85%), drinking (25%) and irrigation (71%) than mesotrpohic and eutrophic samples.
 
 Because, the drinking and livestock criteria were met in the vast majority of samples, they were not included in the analyses.
+
+    ##        [,1]
+    ## red   0.116
+    ## green 0.828
+    ## blue  0.116
+
+<img src="figures/radar plot  -1.png" style="display: block; margin: auto;" /><img src="figures/radar plot  -2.png" style="display: block; margin: auto;" />
 
 #### Ecoservices PCA
 

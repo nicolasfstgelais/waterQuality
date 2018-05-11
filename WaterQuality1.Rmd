@@ -1,0 +1,290 @@
+---
+title: "Exploring water quality"
+author: "Nicolas F. S-Gelais"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.width=12, fig.height=8, fig.path='figures/',
+                      echo=TRUE, warning=FALSE, message=FALSE,fig.width=6, fig.height=6,fig.align = "center")
+
+knitr::opts_knit$set(output.dir="reports")
+```
+
+### Read files
+
+Import the canadian rivers dataset data on stations and the canadian guidelines
+```{r init data}
+library(knitr)
+library(kableExtra)
+library(ReporteRs)
+library(maps)
+library(fmsb)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+rm(list=ls(all=TRUE))
+source("R/functions.R")
+load("data/dataCDN.RData")
+load("data/sitesClassfc.RData")
+load("data/critLimdoc.RData")
+colFreq<-function(x)sum(!is.na(x))/length(x)
+input =read.csv("inputs/dbInput_cdnRiv.csv",na.strings = "",stringsAsFactors = T)
+
+
+```
+
+
+### 1. Compare ecoservices guidelines
+
+*Creating a common guideline database*
+
+We created a common guidelines database with all the Canadian guidelines for the selected aquatic ecosystem services (based on CCME). While for trophic status guidelines we used Dodd 19XX trophic status classification (oligotrophic, mesotrophic and eutrophic). The comon guideline database can be accesses here. A total of `r length(unique(guide$Pollutant))` variables are used to establish these guidelines. To assess the amount of overlap between the guidelines used, we grouped the guidelines by chemical groups (based on the CCME classification) and calculated the proportion of guidelines from each chemical group that is used for to establish wether or not a given ecosystem service can be provide (See Table 1).For each chemical group, we selected coumpounds that we used as guidelines for the highest number of ES for further analyses.  had the most important overlap between the different ES and searched for those variables within a variety of canadian openly available databases. 
+
+*Searching for  measures of the selected compounds in available databases*
+
+We searched within openly available canadin databases with data on for the selected compounds, each time at least one compund was identify at for a specific month, we took the average for that compound. We used a total `r nrow(input)` and we identified `r nrow(db_wide_ym)` collection events for which a least of of the selected compound have been sampled. 
+
+*Create a *
+
+We searched within openly available canadin databases with data on for the selected compounds, each time at least one compund was identify at for a specific month, we took the average for that compound. We used a total `r nrow(input)` and we identified `r nrow(db_wide_ym)` collection events for which a least of of the selected compound have been sampled. 
+
+
+Table 1: The proportion of guidelines in each chemical group by ecosystem services (ES) based on Canadian guidelines and
+
+
+```{r Explore guidelines ,echo=F}
+polCat=matrix(0,length(unique(guide$SuperCategory)),length(unique(guide$Chemical.groups)),dimnames=list(unique(guide$SuperCategory),unique(guide$Chemical.groups)))
+
+for(i in unique(guide$SuperCategory)){
+  for(j in unique(guide$Chemical.groups)){
+    polCat[i,j]=nrow(guide[guide$SuperCategory%in%i&guide$Chemical.groups%in%j,])/nrow(guide[guide$SuperCategory%in%i,])
+  } }
+
+
+remove.cols=c("Disinfectant & BP","Physical","pH","DOC")
+remove.rows=c("DOC")
+polCat.mod=round(polCat[ !rownames(polCat) %in% remove.rows,  !colnames(polCat) %in% remove.cols],2)
+polCat.mod=polCat.mod[,order(colnames(polCat.mod))]
+polCat.mod=polCat.mod[order(rownames(polCat.mod)),order(colnames(polCat.mod))]
+rownames(polCat.mod)=c("Aquatic Wildlife","Drinking","Irrigation","Livestock","Recreational","Trophic Status")
+
+polCat.mod=data.frame(ES=rownames(polCat.mod),polCat.mod)
+colnames(polCat.mod)=c("ES","Biological","Inorganic chemicals","Metals","Nutrients","Organic chemicals","Pesticides")
+
+
+polCat.mod %>%
+  mutate_if(is.numeric, function(x) {
+    cell_spec(x, "html", bold = T, color = "white",
+              background  = spec_color(x, begin=1,end = 0.6,option="A"))
+  }) %>%
+kable(polCat ,escape = F,format = "html", align = "c") %>%
+  kable_styling("striped", full_width = F) %>%
+  row_spec(0, angle = 0)
+
+ # ReporteRsWrap(plotHeatMap,"HeatMap")
+
+
+
+#kable(incMatrix, "html") %>%
+ # kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+```
+
+```{r guidelines table ,echo=F}
+freq=apply(db_wide_ym,2,colFreq)
+
+colFreq(db_wide_ym$fc)
+
+
+guide.sub=guide[guide$Pollutant%in%colnames(db_wide_ym)&guide$Limit=="upper",]
+guide.wide=spread(guide.sub[,c("Category","Chemical.groups","Pollutant","Concentration")],Category,Concentration)
+
+guide.wide=guide.wide[order(guide.wide$Pollutant),]
+guide.wide=guide.wide[order(guide.wide$Chemical.groups),]
+freq=round(freq[guide.wide$Pollutant],2)
+guide.wide=cbind(guide.wide,freq)
+rownames(guide.wide)=guide.wide$Pollutant;guide.wide$Pollutant=NULL
+guide.wide[is.na(guide.wide)]=""
+guide.wide=t(guide.wide)
+guide.wide=(guide.wide[-1,])
+
+rownames(guide.wide)=c("Aquatic Wildlife","Drinking","Irrigation","Livestock","Mesotrophic","Oligotrophic","Recreational","Frequency")
+
+kable(guide.wide, "html") %>%
+  add_header_above(c(" ", "Biological" = 1, "Inorganic Chemicals" = 4,"Metals"=9, "Nutrients"=2, "Organic Chemical"=1,"Pesticides"=5)) %>%
+  kable_styling(position="center",bootstrap_options = c("striped", "hover", "condensed"), full_width = F)%>%
+  row_spec(0, angle = 0)
+
+
+```
+
+### 2.Compare ecoservices in the dataset
+
+In this table, we compare the occurence of the different ecoservices in the dataset. On the diagonal of this table, the proportion of sites for which a given criteria was met is reported. Outside the diagonal we are reporting how often the column criteria is met when the row criteria is met. 
+
+```{r inclusion matrix ,echo=F}
+incMatrix=matrix(NA,ncol(sitesClass),ncol(sitesClass),dimnames=list(colnames(sitesClass),colnames(sitesClass)))
+i="recreational"
+j="drinking"
+for(i in colnames(incMatrix)){
+  for(j in colnames(incMatrix)){
+    if(i==j){incMatrix[i,j]=round(sum(sitesClass[,i],na.rm = T)/nrow(sitesClass[!is.na(sitesClass[,i]),]),2 )}  else{
+      subM=sitesClass[sitesClass[,i]==1&!is.na(sitesClass[,i]),]
+      incMatrix[i,j]=round(sum(subM[,j],na.rm = T)/nrow( subM[!is.na(subM[,j]),]),2)}
+  }}
+
+kable(incMatrix, "html") %>%
+  kable_styling(position="center",bootstrap_options = c("striped", "hover", "condensed"))
+
+```
+
+In this dataset, `r incMatrix["oligotrophic","oligotrophic"]*100` % of sites were oligotrophic, `r incMatrix["mesotrophic","mesotrophic"]*100` % mesotrophic and `r incMatrix["eutrophic","eutrophic"]*100`%  eutrophic. Only `r incMatrix["aquatic","aquatic"]*100`% of the samples were suitable for aquatic life, `r incMatrix["recreational","recreational"]*100`% for swimming and `r incMatrix["drink","drink"]*100`% for drinking. For gricultural use, in `r incMatrix["irrigation","irrigation"]*100`% of the samples the water was usable for irrigation and `r incMatrix["livestock","livestock"]*100`% for livestock. 
+
+When the water is oligotrophic are more often suitable for aquatic life (`r incMatrix["oligotrophic","aquatic"]*100`%), recreation (`r incMatrix["oligotrophic","recreational"]*100`%), drinking (`r incMatrix["oligotrophic","drink"]*100`%) and irrigation (`r incMatrix["oligotrophic","irrigation"]*100`%) than mesotrpohic and eutrophic samples. 
+
+Because, the drinking and livestock criteria were met in the vast majority of samples, they were not included in the analyses. 
+
+```{r radar plot  ,echo=F}
+library(colourpicker)
+#plotHelper()
+col2rgb("#1DCF1D")/250
+radar.dat=incMatrix[c("oligotrophic","mesotrophic","eutrophic"),c("aquatic","recreational", "drink", "irrigation", "livestock")]
+radar.dat=as.data.frame(rbind(rep(1,ncol(radar.dat)) , rep(0.01,ncol(radar.dat)) , radar.dat))
+colors_border=c( rgb(0.112,0.56,0.876,0.9), rgb(0.18,0.796,0.828,0.9) , rgb(0.204,0.64,0.176,0.9) )
+colors_in=c( rgb(0.112,0.56,0.876,0.2), rgb(0.18,0.796,0.828,0.2) , rgb(0.204,0.64,0.176,0.2) )
+radarchart( radar.dat  , axistype=1 , 
+            #custom polygon
+            pcol=colors_border , pfcol=colors_in , plwd=4 , plty=1,
+            #custom the grid
+            cglcol="grey", cglty=1, axislabcol="grey", caxislabels=seq(0,100,25), cglwd=0.8,
+            #custom labels
+            vlcex=0.8
+)
+legend(x=1, y=1.2, legend = rownames(radar.dat[-c(1,2),]), bty = "n", pch=20 , col=colors_border , text.col = "grey32", cex=1.2, pt.cex=3)
+
+
+radar.dat=incMatrix[c("aquatic","recreational", "drink", "irrigation", "livestock"),c("aquatic","recreational", "drink", "irrigation", "livestock")]
+
+radar.dat[c(1),c(1)]=0;radar.dat[c(2),c(2)]=0;radar.dat[c(3),c(3)]=0;radar.dat[c(4),c(4)]=0;radar.dat[c(5),c(5)]=0
+
+colors_border=c( rgb(0.112,0.56,0.876,0.9), rgb(0.18,0.796,0.828,0.9) , rgb(0.204,0.64,0.176,0.9),rgb(0.116,0.828,0.116,0.9),rgb(0.908,0.104,0.112,0.9) )
+colors_in=c( rgb(0.112,0.56,0.876,0.2), rgb(0.18,0.796,0.828,0.2) , rgb(0.204,0.64,0.176,0.2),rgb(0.116,0.828,0.116,0.2),rgb(0.908,0.104,0.112,0.2)  )
+
+radar.dat=as.data.frame(rbind(rep(1,ncol(radar.dat)) , rep(0.01,ncol(radar.dat)) , radar.dat))
+radarchart( radar.dat  , axistype=1 , 
+            #custom polygon
+            pcol=colors_border , pfcol=colors_in , plwd=4 , plty=1,
+            #custom the grid
+            cglcol="grey", cglty=1, axislabcol="grey", caxislabels=seq(0,100,25), cglwd=0.8,
+            #custom labels
+            vlcex=0.8
+)
+legend(x=1, y=1.2, legend = rownames(radar.dat[-c(1,2),]), bty = "n", pch=20 , col=colors_border , text.col = "grey32", cex=1.2, pt.cex=3)
+```
+
+
+#### Ecoservices PCA
+*** 
+
+In the ecoservices PCA, the first and second axes are mainly trophic axes, on which, all ecoservices are more associated with oligotrophic water. On the third axis, we see a strong association between recreational and irrgations services, and between aquatic wildlife and drinking, but a negative association between the two groups. By looking at the ecoservices guideline table, it make sense that aquatic wildlife and drinking are associated, as their respectives guidelines are similar, but it isn't the case for irrigation and recreation. 
+```{r services PCA,echo=F}
+
+spaceSel=c("oligotrophic","mesotrophic","aquatic","irrigation","recreational","drink","eutrophic","livestock")
+sel=which(rowSums(is.na(sitesClass[,spaceSel])) == 0)
+pca=prcomp(sitesClass[sel,spaceSel],center = T,scale. = T)
+
+impo=(summary(pca)$importance)
+# axes 1 and 2
+plotPCA12<-function(){
+axes=c(1,2)
+m=1
+sp=vegan::scores(pca,display = "species",choices=axes*m)
+plot(vegan::scores(pca,display = "species"),type="n",xlim=range(sp[,1]*1.1),xlab=paste0("PC1 (",round(impo[2,axes[1]],2)*100,"%)"),ylab=paste0("PC2 (",round(impo[2,axes[2]],2)*100,"%)"))
+text(sp,labels=rownames(sp),col="grey35")
+arrows(0,0,sp[,1]*0.85,sp[,2]*0.85,length=0.07)
+abline(h=0);abline(v=0)
+}
+plotPCA12()
+  ReporteRsWrap(plotPCA12,"PCA12")
+
+# axes 2 and 3
+  plotPCA23<-function(){
+axes=c(2,3)
+m=1
+sp=vegan::scores(pca,display = "species",choices=axes*m)
+plot(vegan::scores(pca,display = "species"),type="n",xlim=range(sp[,1]*1.1),ylim=range(sp[,2]*1.1),xlab=paste0("PC1 (",round(impo[2,axes[1]],2)*100,"%)"),ylab=paste0("PC2 (",round(impo[2,axes[2]],2)*100,"%)"))
+text(sp,labels=rownames(sp),col="grey35")
+arrows(0,0,sp[,1]*0.85,sp[,2]*0.85,length=0.07)
+abline(h=0);abline(v=0)
+}
+  plotPCA23()
+  ReporteRsWrap(plotPCA23,"PCA23")
+
+
+```
+
+
+```{r map ,echo=F}
+
+#plotMap<- function(){
+world_map <- map_data("world", "Canada") 
+
+#Creat a base plot with gpplot2
+p <- ggplot() + coord_fixed() +
+  xlab("") + ylab("")
+
+cleanup <- 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
+        panel.background = element_rect(fill = "transparent",colour = NA),
+        plot.background = element_rect(fill = "transparent",colour = NA),
+        axis.line = element_line(colour = "white"), legend.position="none",
+        axis.ticks=element_blank(), axis.text.x=element_blank(),
+        axis.text.y=element_blank())
+
+points<-
+  geom_point(data=location, 
+             aes(x=long, y=lat), colour="black", 
+             fill="black",pch=21, size=1, alpha=I(0.6))
+
+#Add map to base plot
+base_world <- p + geom_polygon(data=world_map, aes(x=long, y=lat, group=group), 
+                                     colour="light blue", fill="light blue")+ cleanup  +points
+base_world
+
+#}
+
+plotMap<-function(){print(base_world)}
+
+  ppi=600
+  png("figures/mapCdn.png",width = 4, height = 5, units = 'in',bg="transparent",res=ppi)
+  print(base_world)
+  dev.off()
+
+  #ReporteRsWrap(plotMap,"mapCDN")
+
+
+```
+
+#### Comparing the limiting guidelines
+*** 
+
+In this table we compare the limiting guidelines for each ecoservice. For each guideline, we report how often when a sample cannot provide an ecoservice a specific guideline responsible for the none compliance. 
+For trophic status, when a sample change from one trophic status to the other, TN and TP are almost always both over the guideline (Even if TP was measure more often)
+```{r compaare limiting,echo=F,results='asis'}
+limComp=round(critLim,2)
+limComp=limComp[order(rowSums(limComp,na.rm = T),decreasing = T),]
+
+limComp[is.nan(limComp)]=""
+
+for(i in 1:nrow(limComp)){
+  temp=t(limComp[i,,drop=F])
+  temp=temp[!is.na(temp),,drop=F]
+ # temp=as.numeric(temp[,1])
+  temp=temp[order(temp[,1,drop=F],decreasing = T),,drop=F]
+#print(kable(temp, "html",align=c(rep('c', 8))) %>%
+  #kable_styling(bootstrap_options = c("striped", "hover", "condensed"),position = "center",full_width = F))
+}
+
+```

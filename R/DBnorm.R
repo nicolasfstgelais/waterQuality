@@ -34,7 +34,7 @@ DBnorm<- function(inputFile = "dbInput_cdnRiv.csv",catFile="inputs/categories.cs
   
   
   #exclu =  read.csv("inputs/exclu.csv",header=F)
-  
+  i=2
   
   for(i in 1:nrow(input)){
     
@@ -84,7 +84,6 @@ DBnorm<- function(inputFile = "dbInput_cdnRiv.csv",catFile="inputs/categories.cs
                    1 ,skip = input$lineSkip[i],na.strings = c("", "NA"),stringsAsFactors = F)}
     
     db=as.data.frame(db)
-    
     
   
    
@@ -174,6 +173,14 @@ DBnorm<- function(inputFile = "dbInput_cdnRiv.csv",catFile="inputs/categories.cs
     if(is.na(input[i, "wideVar"])){
       searchVec=colnames(db)
     }
+    
+    
+    # store all variables name in a vector for future reference
+    if(i==1)write.csv(unique(db[,input[i, "wideVar"]]),"data/colNames.csv",row.names = F)
+    if(i!=1){
+      colNames=read.csv("data/colNames.csv",stringsAsFactors = F)
+       write.csv(unique(c(colNames[,1],unique(db[,input[i, "wideVar"]]))),"data/colNames.csv",row.names = F)}
+    
     
     rowSel=NULL
     j="dicamba"

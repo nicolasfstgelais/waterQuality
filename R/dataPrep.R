@@ -6,7 +6,7 @@ stationsPath="data/stations_norm.csv"
 guidePath="data/CDN_guidelines.csv"
 outputPath="data/dataCDN"
 
-selOut="DOC"
+selOut=""
 
 dataPrep <- function(dbPath,stationsPath,guidePath,outputPath,selOut="")
 {

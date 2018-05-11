@@ -1,0 +1,30 @@
+Lvl1,Lvl2,Keywords
+arsenic,arsenic,(?=.*(arsenic))(?!.*extract)(?!.*dissolved)|(?=.*AS-EXT)
+lead,lead,(?=.*(lead))(?!.*extract)(?!.*dissolved)(?!.*particulate)|(?=.*plomb)(?!.*extract)|(?=.*PB-EXT)
+cadmium,cadmium,(?=.*(cadmium))(?!.*extract)(?!.*dissolved)(?!.*particul)|(?=.*CD-EXT)
+atrazine,atrazine,(?=.*(atrazine))(?=.*total)(?!.*de-ethyled)(?!.*de-isopropyled)
+fc,fc,(?=.*(fecal))(?!.*strepto)|ESCHERICHIA|coliforms
+uranium,uranium,(?=.*(uranium))(?!.*extract)(?!.*dissolved)|(?=.*U-EXT)
+tp,tp,(?=.*(phosphorus))(?=.*total)(?!.*dissolved)|(?=.*P-T-PER)
+chl,chla,(?=.*(CHLOROPHYLL))(?!.*CHLOROPHYLL-B)(?!.*EXTRBLE)
+tn,tn,(?=.*(nitrogen))(?=.*total)(?!.*dissolved)|(?=.*N-TOT)
+chloride,chloride,(?=.*(chloride))(?!.*dissolved)
+copper,copper,(?=.*(copper))(?=.*total)
+molybdenum,molybdenum,(?=.*(molybdenum))(?=.*total)
+nickel ,nickel,(?=.*(nickel))(?=.*total)
+nitrate,nitrate,(?=.*(nitrate))(?=.*total)
+zinc ,zinc,(?=.*(zinc))(?=.*total)
+iron ,iron,(?=.*(iron))(?=.*total)
+simazine,simazine,simazine
+metribuzin,metribuzin,metribuzin
+metolachlor,metolachlor,metolachlor
+dicamba,dicamba,dicamba
+bromoxynil,bromoxynil,bromoxynil
+toluene,toluene,(?=.*(toluene))(?!.* TRICHLOROTOLUENE)
+ethylbenzene,ethylbenzene,Ethylbenzene
+dichloromethane,dichloromethane,Dichloromethane
+"1,2-dichloroethane","1,2-dichloroethane","1,2-dichloroethane"
+nitrite,nitrite,nitrite
+fluoride,fluoride,fluoride
+diclofop-methyl,diclofop-methyl,diclofop-methyl
+nitrate,nitrate,(?=.*(nitrate))(?=.*total)

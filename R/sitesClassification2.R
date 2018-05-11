@@ -13,23 +13,26 @@ registerDoSNOW(cl)
 # class 
 
 
-import="data/dataCDNdoc.RData"
+import="data/dataCDN.RData"
 db_wide="db_wide_ym"
 selSpaces=c("oligotrophic","mesotrophic","eutrophic","aquatic","recreational","drink","irrigation","livestock")
 #selSpaces=c("livestock")
 
-selOut="doc"
+selOut="fc"
 
 sitesClassification<-function(import,db_wide,selSpaces,selOut="")
 {
 source("R/functions.R")
-load(import)
+load(paste0("data/dataCDN",selOut,".RData"))
 db_wide=get(db_wide)
 selVar=colnames(db_wide)
 
 # forced to have fc measures
 #db_wide=db_wide[!is.na(db_wide$fc),]
+#import="data/dataCDN.RData"
+
 #load(paste0("data/sitesClass",selOut,".RData"))
+
 
 
 

@@ -1,0 +1,29 @@
+"","Pollutant","Units","Chemical.groups","aquatic","DOC","drink","irrigation","livestock","mesotrophic","oligotrophic","recreational"
+"9","fc","per 100 mL ","Biological",NA,NA,"11","100",NA,NA,NA,"200"
+"8","doc","ug/L","DOC",NA,"8500",NA,NA,NA,NA,NA,NA
+"5","chloride","ug/L","Inorganic chemical","120000",NA,NA,NA,NA,NA,NA,NA
+"10","fluoride","ug/L","Inorganic chemical",NA,NA,"1500","1000",NA,NA,NA,NA
+"17","nitrate","ug/L","Inorganic chemical","13000",NA,"45000",NA,NA,NA,NA,NA
+"18","nitrite","ug/L","Inorganic chemical",NA,NA,"3000",NA,"10000",NA,NA,NA
+"1","arsenic","ug/L","Metal","5",NA,"10","100","25",NA,NA,NA
+"4","cadmium","ug/L","Metal","0.09",NA,"5","5.1","80",NA,NA,NA
+"6","copper","ug/L","Metal","2",NA,NA,NA,NA,NA,NA,NA
+"12","iron","ug/L","Metal","300",NA,NA,"5000",NA,NA,NA,NA
+"13","lead","ug/L","Metal","1",NA,"10","200","100",NA,NA,NA
+"15","molybdenum","ug/L","Metal","73",NA,NA,NA,"500",NA,NA,NA
+"16","nickel","ug/L","Metal","25",NA,NA,"200","1000",NA,NA,NA
+"27","uranium","ug/L","Metal","15",NA,"20","10","200",NA,NA,NA
+"28","zinc","ug/L","Metal","30",NA,NA,NA,"50000",NA,NA,NA
+"22","tn","ug/L","Nutrients",NA,NA,NA,NA,NA,"1500","700",NA
+"25","tp","ug/L","Nutrients",NA,NA,NA,NA,NA,"75","25",NA
+"11","fluoride","ug/L","Organic chemical","120",NA,NA,NA,NA,NA,NA,NA
+"19","nitrite","ug/L","Organic chemical","11820",NA,NA,NA,NA,NA,NA,NA
+"23","toluene","","Organic chemical","2",NA,NA,NA,NA,NA,NA,NA
+"24","toluene","ug/L","Organic chemical",NA,NA,"60",NA,"24",NA,NA,NA
+"2","atrazine","ug/L","Pesticide","1.8",NA,"5","10","5",NA,NA,NA
+"3","bromoxynil","ug/L","Pesticide","5",NA,"5","0.33","11",NA,NA,NA
+"7","dicamba","ug/L","Pesticide","10",NA,"120","0.006","122",NA,NA,NA
+"14","metolachlor","ug/L","Pesticide","7.8",NA,"50","28","50",NA,NA,NA
+"20","simazine","","Pesticide","10",NA,NA,NA,NA,NA,NA,NA
+"21","simazine","ug/L","Pesticide",NA,NA,"10","0.5","10",NA,NA,NA
+"26","turbidity","NTU","Physical",NA,NA,"0.1",NA,NA,NA,NA,"50"
