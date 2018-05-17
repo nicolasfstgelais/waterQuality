@@ -13,6 +13,7 @@ dataPrep <- function(dbPath,stationsPath,guidePath,outputPath,selOut="")
 ## Read files
 source("R/functions.R")
 db=read.csv(dbPath,stringsAsFactors = F)
+range(db$date)
 stations=read.csv(stationsPath,stringsAsFactors = F,row.names = 1)
 guide=read.csv(guidePath,stringsAsFactors=FALSE)
 

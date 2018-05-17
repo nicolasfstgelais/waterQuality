@@ -8,8 +8,8 @@ rm(list=ls(all=TRUE))
 #1- add database information in inputs/inputs.csv
 
 
-source("R/DBnorm.R")
-DBnorm(inputFile = "dbInput_cdnRiv_loc.csv",catFile="categories_sel.csv",output="cdnRiv")
+source("R/dbExtract.R")
+dbExtract(inputFile = "dbInput_cdnRiv_loc.csv",catFile="categories.csv",output="cdnRiv")
 
 source("R/DBnormStations.R")
 #DBnormStations(inputFile = "dbInputStations.csv")
@@ -18,9 +18,9 @@ source("R/dataPrep.R")
 dataPrep(dbPath="data/cdnRiv_norm.csv",stationsPath="data/stations_norm.csv",guidePath="data/CDN_guidelines.csv",
                      outputPath="data/dataCDN",selOut="")
   
-source("R/sitesClassification2.R")
+source("R/sitesClassification.R")
 selSpaces=c("oligotrophic","mesotrophic","eutrophic","aquatic","recreational","drink","irrigation","livestock")
-sitesClassification(import="data/dataCDNfc.RData",db_wide="db_wide_ym",selSpaces=selSpaces,selOut="fc")
+sitesClassification(import="data/dataCDN.RData",db_wide="db_wide_ym",selSpaces=selSpaces,selOut="")
   
 
 
