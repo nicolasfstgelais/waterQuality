@@ -1,6 +1,40 @@
-rm(list=ls(all=TRUE))
+#rm(list=ls(all=TRUE))
+
+evalLim<-function(env, upper,lower){
+  
+  incLow=NA
+  incUp=NA
+  
+  if(is.na( upper)&is.na(lower))return(NA)
+  if(is.na(env))return(NA)
+  
+  if(is.na(upper))upper=Inf
+  if(is.na(lower))lower=0
+  
+  if(env<upper){incUp=min(incUp,1,na.rm = T)}
+  if(env<lower){
+    incLow=max(incLow,0,na.rm = T)
+  }
+  if(env>=upper){
+    incUp=min(incUp,0,na.rm = T)
+  }
+  if(env>=lower){incLow=max(incLow,1,na.rm = T)}
+  
+  
+  min=min(incUp,incLow)
+  return(min)
+}
+
+library(foreach)
+library(parallel)
+library(doSNOW)
 
 
+no_cores <- detectCores() - 2
+
+# Initiate cluster
+cl <- makeCluster(no_cores)
+registerDoSNOW(cl)
 # class 
 
 
@@ -8,68 +42,116 @@ import="data/dataCDN.RData"
 db_wide="db_wide_ym"
 selSpaces=c("oligotrophic","mesotrophic","eutrophic","aquatic","recreational","drink","irrigation","livestock")
 
+selOut=""
 
-sitesClassification<-function(import,db_wide,selSpaces)
+sitesClassification<-function(import,db_wide,selSpaces,selOut="")
 {
-source("R/functions.R")
-load(import)
-db_wide=get(db_wide)
-selVar=colnames(db_wide)
-
-# forced to have fc measures
-db_wide=db_wide[!is.na(db_wide$fc),]
-#db_wide=db_wide[1:100,]
-
-
-sitesClass=matrix(NA,nrow(db_wide),length(selSpaces),dimnames=list(rownames(db_wide),selSpaces))
-limFreqTable=matrix(0,length(selVar),length(selSpaces),dimnames=list(selVar,selSpaces))
-limTotTable=matrix(0,length(selVar),length(selSpaces),dimnames=list(selVar,selSpaces))
-
-c=1
-pb <- txtProgressBar(min = 0, max = nrow(sitesClass), style = 3)
-
-for(i in rownames(sitesClass)){
-  Sys.sleep(0.1)
+  
+  source("R/functions.R")
+  load(paste0("data/dataCDN",selOut,".RData"))
+  db_wide=get(db_wide)
+  selVar=colnames(db_wide)
+  
+  # forced to have fc measures
+  #db_wide=db_wide[!is.na(db_wide$fc),]
+  #import="data/dataCDN.RData"
+  
+  #load(paste0("data/sitesClass",selOut,".RData"))
+  
+  
+  
+  
+  sitesClass=matrix(NA,nrow(db_wide),length(selSpaces),dimnames=list(rownames(db_wide),selSpaces))
+  limFreqTable=matrix(0,length(selVar),length(selSpaces),dimnames=list(selVar,selSpaces))
+  limTotTable=matrix(0,length(selVar),length(selSpaces),dimnames=list(selVar,selSpaces))
+  
+  measFreq=NA
+  limFreq=NA
+  
+  c=1
+  #pb <- txtProgressBar(min = 0, max = nrow(sitesClass), style = 3)
+  
+  pb <- txtProgressBar(max = nrow(sitesClass)*length(selVar), style = 3)
+  progress <- function(n) setTxtProgressBar(pb, n)
+  opts <- list(progress = progress)
+  class=rep(NA,length(selSpaces));names(class)=selSpaces
+  
+  sitesClass_raw=list()
+  measFreq=matrix(NA,length(selSpaces),length(selVar),dimnames=list(selSpaces,selVar))
+  limFreq=matrix(NA,length(selSpaces),length(selVar),dimnames=list(selSpaces,selVar))
+  
+  db_wide=as.matrix(db_wide)
+  
+  j="aquatic"
   for(j in selSpaces){
-    incLow=NA
-    incUp=NA
-    crit=NULL
-    critLim=NULL
-    enviro=db_wide[i,]
-    for(m in selVar ){
-      upper=LtoN(guide[guide$Pollutant==m&guide$Category==j&guide$Limit=="upper","Concentration"])
-      lower=LtoN(guide[guide$Pollutant==m&guide$Category==j&guide$Limit=="lower","Concentration"])
-      if(length( upper)==0&length(lower)==0)next
-      if(is.na(db_wide[i,m]))next
-      crit[length(crit)+1]=m
-      if(length( upper)==0)upper=Inf
-      if(length(lower)==0)lower=0
-      if(db_wide[i,m]<upper){incUp=min(incUp,1,na.rm = T)}
-      if(enviro[,m]<lower){
-        incLow=max(incLow,0,na.rm = T)
-        critLim[length(critLim)+1]=m}
-      if(db_wide[i,m]>=upper){
-        incUp=min(incUp,0,na.rm = T)
-        critLim[length(critLim)+1]=m}
-      if(db_wide[i,m]>=lower){incLow=max(incLow,1,na.rm = T)}
-      # print(paste0(m,":",incUp,incLow))
-      #if(incUp==0)break
-    }
-    sitesClass[i,j]=min(incUp,incLow)
-    if(!is.na(min(incUp,incLow))&min(incUp,incLow)==0){
-      limTotTable[crit[!is.na(db_wide[i,crit])],j]=  limTotTable[crit[!is.na(db_wide[i,crit])],j]+1
-      limFreqTable[critLim[!is.na(db_wide[i,critLim])],j]=  limFreqTable[critLim[!is.na(db_wide[i,critLim])],j]+1
-    }
-    #}
     
+    # Initiate cluster
+   # cl <- makeCluster(no_cores)
+    #registerDoSNOW(cl)
+    
+    guideUpper=guide[guide$Pollutant%in%selVar&guide$Category==j&guide$Limit=="upper",c("Pollutant","Concentration")]
+    rn=guideUpper$Pollutant;guideUpper=unlist(guideUpper[,2]);names(guideUpper)=rn
+  
+    
+    guideLower=guide[guide$Pollutant%in%selVar&guide$Category==j&guide$Limit=="lower",c("Pollutant","Concentration")]
+    rn=guideLower$Pollutant;guideLower=unlist(guideLower[,2]);names(guideLower)=rn
+    
+
+  
+    out=rep(NA,nrow(db_wide))
+    names(out)=rownames(db_wide)
+    #x <-foreach(i=rownames(db_wide), .combine='rbind',.options.snow = opts) %:%
+        for(m in selVar){
+          if(m==selVar[1])out=apply(db_wide[,m,drop=F],1,evalLim,upper=as.numeric(guideUpper[m]),lower=as.numeric(guideLower[m]))
+          if(m!=selVar[1])out=cbind(out,apply(db_wide[,m,drop=F],1,evalLim,upper=as.numeric(guideUpper[m]),lower=as.numeric(guideLower[m],evalLim)))
+        }
+        colnames(out)=selVar
+    
+    sitesClass_raw[[j]]=out
+    
+    if(file.exists(paste0("data/sitesClass",selOut,".RData"))){
+      load(paste0("data/sitesClass",selOut,".RData"))
+      
+      if(j%in%colnames(sitesClass))
+      {
+        sitesClass[,j]=apply(out,1,min,na.rm=T)
+        sitesClass[is.infinite(sitesClass)]=NA
+        
+      }
+      if(!j%in%colnames(sitesClass))
+      {
+        sitesClass=cbind(sitesClass,apply(out,1,min,na.rm=T))
+        colnames(sitesClass)[ncol(sitesClass)]=j
+        sitesClass[is.infinite(sitesClass)]=NA
+      }
+    }
+    
+    
+    #-save(sitesClass,sitesClass_raw,critLim,file=paste0("data/sitesClass",selOut,".RData"))
+    
+    save(sitesClass,file=paste0("data/sitesClass",selOut,".RData"))
+    
+    #-indic<-function(x)length(which(is.nan(x)))/(length(which(is.nan(x)))+(length(which(is.infinite(x)))))
+    
+    measFreqF<-function(x)(length(which(x==1))+length(which(x==0)))/length(x)
+    limFreqF<-function(x)length(which(x==0))/(length(which(x==1))+length(which(x==0)))
+    temp.measFreq=apply(sitesClass_raw[[j]],2,measFreqF)
+    temp.limFreq=apply(sitesClass_raw[[j]],2,limFreqF)
+    
+    
+    
+    #-s=sweep(sitesClass_raw[[j]],MARGIN=1,sitesClass[,j],`/`)
+   #- temp=apply(s,2,indic)
+    #-temp[is.nan(temp)]=NA
+    measFreq[j,]=temp.measFreq
+    limFreq[j,]=temp.limFreq
+    print(j)
   }
-  #print(c);
-  c=c+1
-  setTxtProgressBar(pb, c)
-}
-close(pb)
-
-
-save(sitesClass,limFreqTable,limTotTable,file="data/sitesClass.RData")
-}
-
+  
+  save(sitesClass_raw,file=paste0("data/sitesClass_raw",selOut,".RData"))
+  save( measFreq,limFreq,file=paste0("data/critLim",selOut,".RData"))
+  close(pb)
+  
+  
+  }
+  
