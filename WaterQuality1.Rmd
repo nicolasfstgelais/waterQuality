@@ -1,12 +1,14 @@
 ---
 title: "Exploring water quality"
 author: "Nicolas F. S-Gelais"
-date: '`r Sys.Date()`'
-output: 
+date: "`r Sys.Date()`"
+output:
   word_document:
-    fig_width: 5
+    fig_caption: yes
     fig_height: 5
-    fig_caption: true
+    fig_width: 5
+  html_document:
+    df_print: paged
 ---
 
 ```{r global_options, include=FALSE}
@@ -57,15 +59,13 @@ We grouped the guidelines by chemical groups (based on the CCME classification) 
 
 *Creating an aggregated limnological database*
 
-We wrote a R script (*dbExtract*) to search openly available canadian limnological databases for measures of the selected compounds in rivers. The seach within databases resulted in 660 000 unique observation of the selected coumpounds in river across Canada between 1995-2017. Observation, were then grouped by station and by month (*dbSpread* function) to create a aggregated limnological database of `r nrow(db_wide_ym)` observations. 
+We wrote a R function (*dbExtract*) to search openly available canadian limnological databases for measures of the selected compounds in rivers. The seach within databases resulted in 660 000 unique observation of the selected coumpounds in river across Canada between 1995-2017. Observation, were then grouped by station and by month (*dbSpread* function) to create a aggregated limnological database of `r nrow(db_wide_ym)` observations. 
 
-Then we wrote the function ESeval() which evaluate the potential of providing the seleted ES at each sampling event (by month and by station) based on the common guideline db and the aggregated limnological DB. The is an important variability in the variables measured at each sampling event, so the potential of providing a gien ES was based on the guidelines for which a measure was available, and when no varaibles measures enable to evaluate whetehr a service could be provided, the service wasn't evaluated for this specific sampling event.  Then we compared the overlap between ES services by computing how often the often services are avaialble when a specific service is available. 
-
-THis function uses the ES space DB to calculate the emperical overlap between ecosystem services in canadian rivers.
+Then we wrote the function *ESeval* which evaluate the potential of providing the seleted ES at each sampling event (by month and by station) based on the common guideline db and the aggregated limnological DB. The is an important variability in the variables measured at each sampling event, so the potential of providing a gien ES was based on the guidelines for which a measure was available, and when no varaibles measures enable to evaluate whetehr a service could be provided, the service wasn't evaluated for this specific sampling event. Then we compared the overlap between ES services by computing how often the often services are avaialble when a specific service is available. 
 
 *Identify which guidelines is limiting use across sites*
 
-For each ES we identified how often a specific compound is limiting use across all sampling event. To do we we wrote a function limFreq(), which based on the ES space DB and the Aggregated limnological DB calculate how often when a compounds is measured this compound limit the avalability of a given SE. 
+For each ES we identified how often a specific compound is limiting use across all sampling event. To do we we wrote a function *limFreq()*, which based on the ES space DB and the Aggregated limnological DB calculate how often when a compounds is measured this compound limit the avalability of a given SE. In this table we compare the limiting guidelines for each ecosystem services. For each guideline, how often when measured a specific compounds limiting a given use. This metric enable to identify compounds that are often limiting when measured which could mean that we overestimated of often a given use can be provided by a system. 
 
  For each guideline, we report how often when a sample cannot provide an ecoservice a specific guideline responsible for the none compliance. 
 
@@ -74,7 +74,7 @@ For each ES we identified how often a specific compound is limiting use across a
 Table 1: The proportion of guidelines in each chemical group by ecosystem services (ES) based on Canadian guidelines and
 
 
-```{r Explore guidelines ,echo=F}
+```{r Explore guidelines ,echo=F,include=F}
 
 # explore the frequency of each guideline
 polFreq=matrix(NA,length(unique(guide$Pollutant)),2,dimnames=list(unique(guide$Pollutant),c("Group","Freq")))
@@ -104,7 +104,8 @@ rownames(polCat.mod)=c("Aquatic Wildlife","Drinking","Irrigation","Livestock","R
 polCat.mod=data.frame(ES=rownames(polCat.mod),polCat.mod)
 colnames(polCat.mod)=c("Ecosystem Services","Biological","Inorganic chemicals","Metals","Nutrients","Organic chemicals","Pesticides")
 
-write.csv(polCat.mod,"data/polCat.mod.csv")
+csv<-function()polCat.mod
+csv()
 
 # create output table 
 polCat.mod %>%
@@ -116,14 +117,15 @@ kable(polCat ,escape = F,format = "pandoc", align = "c") %>%
   kable_styling("striped", full_width = F) %>%
   row_spec(0, angle = 0)
 
- # ReporteRsWrap(plotHeatMap,"HeatMap")
+ #ReporteRsWrap(csv,"csv")
 
 #kable(incMatrix, "html") %>%
  # kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 
 ```
 
-We  observed on important overlap between the guidelines  established by the CCME for Aquatic wildlife, Drinking, Irrigation and Livestock. The guidelines for these uses and in large proportion based on the concentration metals, pesticides and other organics coumpounds. This important overlap is the results that to sutability for these uses is based on eco-toxological studies on living organisms. Most of these guidelines are from lab experiments or epidemilogic studies for human (to verify). In opposition, the guidelines for recreation (in this case swimming) is mainly based on biological guidelines (E.coli and microsystin) and on pH and water temperature (not shown in this table) the guidelines for swimming are established by a X entity. It is intereting that guidelines for swimming are so different than guidelines for drinking water as they are both related to human health, but this can be explained by swimming (?). Finally, the trophic status classification of river that we used (Dodds 19XX) is based on nutrients concentration and chla, which is interesting as the effect of these compounds have an indirect effect on ecosystem, but are not generaly concidered as contamiant they have ecosystemic consequences. 
+
+![title](figures/guidelines_net.png){size=200%}
 
 ```{r guidelines table ,echo=F,include=F}
 freq=apply(db_wide_ym,2,colFreq)
@@ -157,7 +159,18 @@ kable(guide.wide, "pandoc") %>%
 
 ```
 
-### 2.Compare ecoservices in the dataset
+###Results and discussion 
+
+*Guidelines overlap*
+
+  We  observed on important overlap between the guidelines used for Aquatic wildlife protection, Drinking, Irrigation and Livestock, all established by the Canadian Council of Ministers of the Environment (CCME). An important overlap that can be explained because the evaluation of whether a service can be provided is largely based on a eco-toxological approach in which the toxological impact of these compunds on living organisms is establish experimentally (citation CCME). Consequently, the guidelines for these four uses is largely based on the concentration of metals, pesticides and other organics compounds (consistant with what is limiting?). 
+
+  In opposition, the guidelines for recreation (in this case swimming) is mainly based on biological guidelines (E.coli and microsystin) and on pH and water temperature (not shown in this table) the guidelines for swimming are established by a X entity and using Y approach. 
+  
+  It is intereting that guidelines for swimming are so different than guidelines for drinking water as they are both related to human health, but this can be explained by swimming (?). Finally, the trophic status classification of river that we used (Dodds 19XX) is based on nutrients concentration and chla, which is interesting as the effect of these compounds have an indirect effect on ecosystem, but are not generaly concidered as contamiant they have ecosystemic consequences. 
+
+
+*Compare ecoservices in the dataset*
 
 In this table, we compare the occurence of the different ecoservices in the dataset. On the diagonal of this table, the proportion of sites for which a given criteria was met is reported. Outside the diagonal we are reporting how often the column criteria is met when the row criteria is met. 
 
@@ -240,7 +253,7 @@ radar.dat=as.data.frame(rbind(rep(1,ncol(radar.dat)) , rep(0.01,ncol(radar.dat))
 
 
 ![title](figures/radar_mod.png)
-![title](figures/guidelines.png)
+
 
 
 
@@ -330,7 +343,7 @@ plotMap<-function(){print(base_world)}
 #### Comparing the limiting guidelines
 *** 
 
-In this table we compare the limiting guidelines for each ecosystem services. For each guideline, how often when measured a specific compounds limiting a given use. This metric enable to identify compounds that are often limiting when measured which could mean that we overestimated of often a given use can be provided by a system. 
+
 
 The compound that most often limited aquatic wildlife was cadmium concentration followed by lead and fluride, three compounds that were rarely limiting for other uses. For drinking, even if E.coli was measuredin only 9% on the samples, it limited drinking water 89% of the time, which could indicate that we probably overestimated the proportion of rivers in which water was potable. While arsenic and lead limited water use only in few samples. 
 
@@ -346,6 +359,10 @@ For livestock, asenic was the only limiting contaminant, and was only limiting l
 For trophic status, when a sample change from one trophic status to the other, TN and TP are almost always both over the guideline (Even if TP was measure more often)
 
 # maybe we should calculate how often a variable is limiting when measured?
+
+
+###Perspective
+
 
 ```{r compaare limiting,echo=F,results='asis'}
 #limComp=round(critLim,2)
