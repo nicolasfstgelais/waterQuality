@@ -16,9 +16,9 @@ registerDoSNOW(cl)
 import="data/dataCDN.RData"
 db_wide="db_wide_ym"
 selSpaces=c("oligotrophic","mesotrophic","eutrophic","aquatic","recreational","drink","irrigation","livestock")
-#selSpaces=c("livestock")
+selSpaces=c("aquatic")
 
-selOut="fc"
+selOut=""
 
 sitesClassification<-function(import,db_wide,selSpaces,selOut="")
 {
@@ -53,7 +53,7 @@ critLim=matrix(NA,length(selSpaces),length(selVar),dimnames=list(selSpaces,selVa
 
 indic<-function(x)length(which(is.nan(x)))/(length(which(is.nan(x)))+(length(which(is.infinite(x)))))
 
-
+j="aquatic"
 for(j in selSpaces){
 
 # Initiate cluster
@@ -63,6 +63,15 @@ registerDoSNOW(cl)
 subGuide=guide[guide$Pollutant%in%selVar&guide$Category==j,]
 subGuide$Concentration=LtoN(subGuide$Concentration)
 
+guideUpper=guide[guide$Pollutant%in%selVar&guide$Category==j&guide$Limit=="upper",c("Pollutant","Concentration")]
+rn=guideUpper$Pollutant;guideUpper=unlist(guideUpper[,2]);names(guideUpper)=rn
+
+
+guideLower=guide[guide$Pollutant%in%selVar&guide$Category==j&guide$Limit=="lower",c("Pollutant","Concentration")]
+rn=guideLower$Pollutant;guideLower=unlist(guideLower[,2]);names(guideLower)=rn
+
+
+db_wide=as.matrix(db_wide[1:1000,])
 
 
 x <-foreach(i=rownames(db_wide), .combine='rbind',.options.snow = opts) %:%
@@ -77,14 +86,14 @@ x <-foreach(i=rownames(db_wide), .combine='rbind',.options.snow = opts) %:%
       #crit=NULL
       #critLim=NULL
       nExT=F
-      upper=subGuide[subGuide$Pollutant==m&subGuide$Limit=="upper","Concentration"]
-      lower=subGuide[subGuide$Pollutant==m&subGuide$Limit=="lower","Concentration"]
-      if(length( upper)==0&length(lower)==0)nExT=T
+      upper=as.numeric(guideUpper[m])
+      lower=as.numeric(guideLower[m])
+      if(is.na( upper)&is.na(lower))nExT=T
       if(is.na(enviro[m]))nExT=T
       if(nExT==F){
-      #crit[length(crit)+1]=m
-      if(length( upper)==0)upper=Inf
-      if(length(lower)==0)lower=0
+        #crit[length(crit)+1]=m
+        if(is.na( upper))upper=Inf
+        if(is.na(lower))lower=0
       if(enviro[m]<upper){incUp=min(incUp,1,na.rm = T)}
       if(enviro[m]<lower){
         incLow=max(incLow,0,na.rm = T)

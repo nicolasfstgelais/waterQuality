@@ -11,10 +11,10 @@ irrigation,irrigation,,Chlorothalonil,1897456,Pesticide,5.8,ug/L,upper,1994,,(ot
 irrigation,irrigation,,"Chromium, hexavalent (Cr(VI))",7440473,Metal,8,ug/L,upper,1997,,
 irrigation,irrigation,,"Chromium, trivalent (Cr(III))",7440473,Metal,4.9,ug/L,upper,1997,,
 irrigation,irrigation,,Cobalt ,,Metal,50,ug/L,upper,1987,,
-irrigation,irrigation,,fc,,Biological,100,per 100 mL ,upper,1987,,
-irrigation,irrigation,,"Coliforms, total",,Biological,1000,per 100 mL ,upper,1987,,
+irrigation,irrigation,,E.coli,,Biological,100,per 100 mL ,upper,1987,,
+irrigation,irrigation,,Total coliforms ,,Biological,1000,per 100 mL ,upper,1987,,
 irrigation,irrigation,,Cyanazine,2175462,Pesticide,0.5,ug/L,upper,1990,,
-irrigation,irrigation,,Dicamba,1918009,Pesticide,0.006,ug/L,upper,1993,,
+irrigation,irrigation,,Dicamba,1918009,Pesticide,0.025,ug/L,upper,1993,CCME,"2.5 times the detection limit, value of 0.006 µg?L-1 is recommended as the overall Canadian water quality guideline for irrigation "
 irrigation,irrigation,,Diclofop-methyl,51338273,Pesticide,0.18,ug/L,upper,1993,,
 irrigation,irrigation,,Diisopropanolamine,110974,Organic chemical,2000,ug/L,upper,2006,,
 irrigation,irrigation,,Dinoseb,88857,Pesticide,16,ug/L,upper,1992,,
@@ -144,7 +144,7 @@ drink,drink,,Mercury,,Metal,0.001,mg/L,upper,1986,,
 drink,drink,,2-Methyl-4- chlorophenoxyacetic acid,,Pesticide,0.1,mg/L,upper,2010,,
 drink,drink,,Metolachlor,,Pesticide,0.05,mg/L,upper,1986,,
 drink,drink,,Metribuzin,,Pesticide,0.08,mg/L,upper,2005,,
-drink,drink,,Monochlorobenzene,,Inorganic chemical,0.08,mg/L,upper,1987,,
+drink,drink,,Monochlorobenzene,,Organic chemical,0.08,mg/L,upper,1987,,
 drink,drink,,nitrate,,Inorganic chemical,45,mg/L,upper,2013,,45 as nitrate; 10 as nitratenitrogen
 drink,drink,,Nitrilotriacetic acid,,Inorganic chemical,0.4,mg/L,upper,1990,,
 drink,drink,,Nitrite ,,Inorganic chemical,3,mg/L,upper,2013,,3 as nitrite; 1 as nitritenitrogen
@@ -167,12 +167,11 @@ drink,drink,,Trihalomethanes,,Disinfectant & BP,0.1,mg/L,upper,2006,,
 drink,drink,,uranium,,Metal,0.02,mg/L,upper,1999,,
 drink,drink,,Vinyl chloride,,Organic chemical,0.002,mg/L,upper,2013,,
 drink,drink,,Xylenes,,Organic chemical,0.09,mg/L,upper,2014,,Total
-drink,drink,,Enteric protozoa,,Biological,,,upper,,,
-drink,drink,,Total coliforms ,,Biological,0,per 100 mL ,upper,,,
-drink,drink,,E.coli,,Biological,0,per 100 mL ,upper,,,
-drink,drink,,Enteric viruses ,,Biological,,,upper,,,
-drink,drink,,turbidity,,Physical,0.1,NTU,upper,,,"Conventional and direct filtration: ? 0.3 NTU, slow sand and diatomaceous earth filtration: ? 1.0 NTU, slow sand and diatomaceous earth filtration: ? 1.0 NTU"
-drink,drink,,fc,,Biological,11,per 100 mL ,upper,,,"the real guideline is >0, but the detection limit is between 4 and 10"
+drink,drink,,Enteric protozoa,,Biological,,,upper,2012,,
+drink,drink,,Total coliforms ,,Biological,25,per 100 mL ,upper,2011,,Guideline:Treatment goal: Minimum 3 log removal and/or inactivation of cysts and oocysts
+drink,drink,,E.coli,,Biological,25,per 100 mL ,upper,2012,,"the real guideline is >0, but the detection limit is between 4 and 10"
+drink,drink,,Enteric viruses ,,Biological,,,upper,2011,,
+drink,drink,,turbidity,,Physical,0.1,NTU,upper,2012,,"Conventional and direct filtration: ? 0.3 NTU, slow sand and diatomaceous earth filtration: ? 1.0 NTU, slow sand and diatomaceous earth filtration: ? 1.0 NTU"
 aquatic,aquatic,,arsenic,,Metal,5,ug/L,upper,1997,,
 aquatic,aquatic,,atrazine,,Pesticide,1.8,ug/L,upper,1989,,membrane filtration: ? 0.1 NTU
 aquatic,aquatic,,cadmium,,Metal,0.09,ug/L,upper,2014,,
@@ -197,7 +196,7 @@ aquatic,aquatic,,"1,4-Dichlorobenzene",,Organic chemical,26,ug/L,upper,1997,,
 aquatic,aquatic,,3-Iodo-2-propynyl butyl carbamate,,Organic chemical,1.9,ug/L,upper,1999,,
 aquatic,aquatic,,Acenaphthene,,Organic chemical,5.8,ug/L,upper,1999,,
 aquatic,aquatic,,Acridine,,Organic chemical,4.4,ug/L,upper,1999,,
-aquatic,aquatic,,Aldicarb,,Organic chemical,1,ug/L,upper,1993,,
+aquatic,aquatic,,Aldicarb,116063,Pesticide,1,ug/L,upper,1993,,
 aquatic,aquatic,,Aluminium,,Metal,5,ug/L,upper,1993,,5 µg/L if pH < 6.5;100 µg/L if pH ? 6.5
 aquatic,aquatic,,Ammonia (total),,Organic chemical,0.021,mg/L,upper,2001,,"minium, table"
 aquatic,aquatic,,Ammonia (un-ionized),,Organic chemical,19,ug/L,upper,2001,,
@@ -283,12 +282,11 @@ aquatic,aquatic,,Trichloromethane,,Organic chemical,1.8,,upper,1992,,
 aquatic,aquatic,,Trichlorophenols,,Organic chemical,18,,upper,1987,,
 aquatic,aquatic,,Trifluralin,,Pesticide,0.2,,upper,1993,,
 aquatic,aquatic,,Triphenyltin,,Organic chemical,0.022,,upper,1992,,
-recreational,recreational,,fc,,Biological,200,per 100 mL ,upper,,,Swimming
-recreational,recreational,,microcystin,,Biological,20,ug/L,upper,,,
+recreational,recreational,,E.coli,,Biological,400,per 100 mL ,upper,,,Swimming: Single-sample maximum concentration
+recreational,recreational,,Cyanobacteria,,Biological,100000,cells/mL,upper,,,
+recreational,recreational,,microcystin,,Biological,20,ug/L,upper,,,Swimming
 recreational,recreational,,ph,,pH,5,,upper,,CCME,Chemical group?
 recreational,recreational,,ph,,pH,9,,lower,,,Chemical group?
-recreational,recreational,,turbidity,,Physical,50,NTU,upper,,,chemical group?
-recreational,recreational,,secchi,,Physical,1.2,m,upper,,,chemical group?
 trophic,oligotrophic,river,tp,,Nutrients,25,ug/L,upper,1998,Dodds et al. 1998,
 trophic,mesotrophic,river,tp,,Nutrients,75,ug/L,upper,1998,Dodds et al. 1998,
 trophic,mesotrophic,river,tp,,Nutrients,25,ug/L,lower,1998,Dodds et al. 1998,

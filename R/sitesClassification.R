@@ -25,16 +25,16 @@ evalLim<-function(env, upper,lower){
   return(min)
 }
 
-library(foreach)
-library(parallel)
-library(doSNOW)
+#library(foreach)
+#library(parallel)
+#library(doSNOW)
 
 
-no_cores <- detectCores() - 2
+#no_cores <- detectCores() - 2
 
 # Initiate cluster
-cl <- makeCluster(no_cores)
-registerDoSNOW(cl)
+#cl <- makeCluster(no_cores)
+#registerDoSNOW(cl)
 # class 
 
 
@@ -42,7 +42,7 @@ import="data/dataCDN.RData"
 db_wide="db_wide_ym"
 selSpaces=c("oligotrophic","mesotrophic","eutrophic","aquatic","recreational","drink","irrigation","livestock")
 
-selOut=""
+selOut="e.coli"
 
 sitesClassification<-function(import,db_wide,selSpaces,selOut="")
 {
@@ -82,7 +82,7 @@ sitesClassification<-function(import,db_wide,selSpaces,selOut="")
   
   db_wide=as.matrix(db_wide)
   
-  j="aquatic"
+  j="oligotrophic"
   for(j in selSpaces){
     
     # Initiate cluster
