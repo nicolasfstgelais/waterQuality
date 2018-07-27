@@ -36,12 +36,23 @@ source("R/read.ISI.R")
 fields=read.csv("data/DomISIfields.csv")
 ```
 
+Table 1: The 15 most frequent keywords in each Web of knowledge categories
 
 ```{r dom table, echo=FALSE}
   kable(fields) %>%
   kable_styling(bootstrap_options = "striped", full_width = F)
 
-kwbyDom=cbind(AbsKwCounter("data/ISI/WQ_2017_ES")[1:15,1],
+
+
+
+
+```
+
+```{r kw table, echo=FALSE}
+
+
+kwbyDom=cbind(1:15,
+  AbsKwCounter("data/ISI/WQ_2017_ES")[1:15,1],
       AbsKwCounter("data/ISI/WQ_2017_WR")[1:15,1],
    AbsKwCounter("data/ISI/WQ_2017_Eng")[1:15,1],
   AbsKwCounter("data/ISI/WQ_2017_Geo")[1:15,1],
@@ -49,7 +60,8 @@ kwbyDom=cbind(AbsKwCounter("data/ISI/WQ_2017_ES")[1:15,1],
    AbsKwCounter("data/ISI/WQ_2017_Eco")[1:15,1],
       AbsKwCounter("data/ISI/WQ_2017_PH")[1:15,1])
 
-colnames(kwbyDom)=c("ES","WR","Eng","Geo","Bio","Eco","PH")
+colnames(kwbyDom)=c("Ranks","ES","WR","Eng","Geo","Bio","Eco","PH")
+
 
 kable(kwbyDom) %>%
   kable_styling(bootstrap_options = "striped", full_width = T)
@@ -57,4 +69,3 @@ kable(kwbyDom) %>%
 
 
 ```
-
