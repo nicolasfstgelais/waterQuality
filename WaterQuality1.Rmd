@@ -1,9 +1,12 @@
 ---
 title: "Exploring water quality"
-author: "Nicolas F. S-Gelais"
+author:
+ - "Nicolas F. S-Gelais"
+ - "Jean-Francois Lapierre"
+ - "Roxane Maranger"
 date: "`r Sys.Date()`"
 output:
-  html_document:
+  github_document:
     df_print: paged
   word_document:
     fig_caption: yes
@@ -23,40 +26,52 @@ knitr::opts_knit$set(output.dir="reports")
 
 #Abstract
 
+* WQ perspective in the different fields
+* How water quality is tested and how it this evaluation compare with real data.  
+
 How would you define water quality? Even if it’s a concept that is often used to characterize the suitability body of water to provide a given ecosystem service, defining this concept is not a simple task. One of the mains challenges of defining water quality is that  the notion of it is highly context dependent. For example, an ecologist may view water quality as a function of trophic status, whereas from a public health perspective,  water quality is defined as a characteristic of a water that is safe for human consumption or recreation. As a consequence, the parameterization of water quality  is often limited to very specific criteria for different aquatic ecosystem services (ES). Water quality is rarely assessed as an integrative measure that  considers the tradeoffs between multiple uses. 
 
 #Introduction
 
-###The definition of wq
-
-How would you define water quality? The world health organization (WHO) define  water quality as a “ term used here to express the suitability of water to sustain various uses or processes. " (REF). From this definition it is clear that water quality is a complex concept that involve many different components. 
+Water is a ressource that under a great pressure at a global level, in 2010 it was evaluated that "80% of the world’s population is exposed to high levels of threat to water security" [@vorosmartyGlobalThreatsHuman2010]. In Canada... [@wwfNationalAssessmentCanada2017]
 
 
+**The importantce of the term water quality in scientific reaearch is increasing** 
 
-According to [dimensions.ai](https://www.dimensions.ai/)), the proportion of published papers in ecology ( with the term water quality has more than doubled (from 6.6% to 14% of papers) since 1980, and the occurence within in the abstract or title of ecological papers has more than tripled over the same period (0.7% to 2.3%). The increase use of the term water quality in ecology, is similar to what was observed in other fields (see FigureX). This suggest that water quality is a subject that is increasing in importance in science in general. In ecology, 
+According to [dimensions.ai](https://www.dimensions.ai/)), the proportion of published papers in ecology ( with the term water quality has more than doubled (from 6.6% to 14% of papers) since 1980, and the occurence within in the abstract or title of ecological papers has more than tripled over the same period (0.7% to 2.3%). The increase use of the term water quality in ecology, is similar to what was observed in other fields (see Figure 1b). This suggest that water quality is a subject that is increasing in importance in science in general. In ecology, an increase that is consistant but a little bit smaller than what is observed in the literature in general (from 0.05% to 0.15%).
+But how the term water quality use in the different fields? 
+
+**The definition of wq** 
+
+How would you define water quality? According to the world health organization (WHO) water quality is a a “ term used here to express the suitability of water to sustain various uses or processes." (REF). From this definition it is clear that water quality is a complex concept that involve many different components. 
+
+
+![title](figures/figure1.png){size=200%}
+
+
 
 ```{r data,echo=F}
-rm(list=ls(all=TRUE))
+
+
 library(scales)
 library(segmented)
 source("R/dimensions.R")
-plot.trends()
+#plot.trends()
+ReporteRsWrap(plot.trends,"trends")
 ```
-*Figure 1: The temporal evolution (1980-2017) of the  proportion of paper with the term water quality in different fields and in the literature in general based on [dimensions.ai](https://www.dimensions.ai/))* 
+*Figure 1: (a) comparing three different world views of water quality and (b) The temporal evolution (1980-2017) of the  proportion of paper with the term water quality in different fields and in the literature in general based on [dimensions.ai](https://www.dimensions.ai/)* 
 
 
-an increase that is consistant but a little bit smaller than what is observed in the literature in general (from 0.05% to 0.15%).
-But how the term water quality use in the different fields? 
 
+**How wq is used in different fields + patterns in each field**
 
-In ecology, changes in water quality are often equated to the eutrophication of aquatic ecosystems,  [see,  @smithEutrophicationFreshwaterCoastal2003; @howarthNitrogenLimitingNutrient2006].  when water quality was present in abstract or title of an ecological papers,  48% of the time a term related to eutrophication was also found in the abstract (i.e. eutrophication, nutrient, phosphorus, nitrogen). While in the public health domain the term water quality was 57% of the time found along term related to drinking water (keyword: drinking), compared to ecology this proportion is only 4%. While in the soil science field 18% of the abstract with water quality also mentionned irrigation compared to 2% in ecology. 
+In ecology, changes in water quality are often equated to the eutrophication of aquatic ecosystems,  [see,  @smithEutrophicationFreshwaterCoastal2003; @howarthNitrogenLimitingNutrient2006]  when water quality was present in abstract or title of an ecological papers,  48% of the time a term related to eutrophication was also found in the abstract (i.e. eutrophication, nutrient, phosphorus, nitrogen). While in the public health domain the term water quality was 57% of the time found along term related to drinking water (keyword: drinking), compared to ecology this proportion is only 4%. While in the soil science field 18% of the abstract with water quality also mentionned irrigation compared to 2% in ecology. 
 
 This example shows that
 
-###How wq is used in different fields + patterns in each field
 
 
-### Time for a comprehensive approach + ecosystem service approach enable... 
+**Time for a comprehensive approach + ecosystem service approach enable... **
 
 
 
@@ -90,11 +105,11 @@ input =read.csv("inputs/dbInput_cdnRiv.csv",na.strings = "",stringsAsFactors = T
 ```
 
 
-### Approach and framework
+# Approach and framework
 
 The main objective with the framework we are developping here is to enable an evaluation of how often ES [...]
 
-*Aggregated guideline database*
+**Aggregated guideline database**
 
 We created an aggregated guidelines database (*link to the Db*) composed of Canadian guidelines that are used to determine if water can safely provide the following selected uses: drinking water, recreation (i.e. swimming), irrigation, livestock water and for the protection of aquatic wildlife (CCME REF). *Few guidelines were under the detection limit for a compounds, in those situations we used detection limit multiplied by 2 as a guideline to [...]*. For trophic status, we used @dodds_suggested_1998  river trophic status classification. In summary, the canadian guidelines for the five selected uses are based on  `r length(unique(guide$Pollutant))` different chemical compounds. We then grouped the guidelines by chemical groups (based on the CCME classification) to assess the amount of overlap between the guidelines used for each ecosystem service. To do so, for each ES, we calculated the proportion of guidelines used in each chemical group (See Table 1). Following this step, for each chemical group we selected compounds that we used as guidelines for the highest number of ES for further analyses (see categories table). 
 
@@ -108,7 +123,7 @@ knitr::include_graphics("figures/polCat.png")
 
 
 
-*Creating an aggregated limnological database*
+**Creating an aggregated limnological database**
 
 We developped a R function (*dbExtract*) to search openly available canadian limnological databases for measures of the previously selected compounds (see Table X) in rivers. The search within databases 46 databases resulted in 660 000 unique observations in river across Canada (See Figure 1) between over 22 years 1995-2017. Observation, were then grouped by station and by month (*dbSpread* function) to create a aggregated limnological database of `r nrow(db_wide_ym)` observations. 
 
