@@ -24,7 +24,7 @@ According to [dimensions.ai](https://www.dimensions.ai/)), the proportion of pub
 
 How would you define water quality? According to the world health organization (WHO) water quality is a a “ term used here to express the suitability of water to sustain various uses or processes." (REF). From this definition it is clear that water quality is a complex concept that involve many different components.
 
-<img src="figures/figure1.png" alt="title" size="200%" />
+<img src="figures/Figure1.png" alt="title" size="200%" />
 
 *Figure 1: (a) comparing three different world views of water quality and (b) The temporal evolution (1980-2017) of the proportion of paper with the term water quality in different fields and in the literature in general based on [dimensions.ai](https://www.dimensions.ai/)*
 
