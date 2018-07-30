@@ -34,7 +34,7 @@ In ecology, changes in water quality are often equated to the eutrophication of 
 
 This example shows that
 
-**Time for a comprehensive approach + ecosystem service approach enable... **
+**Time for a comprehensive approach + ecosystem service approach enable...**
 
 Approach and framework
 ======================
