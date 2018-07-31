@@ -1,6 +1,6 @@
-How do different world views perceive diff aquatic ecosystem services
+How do different world views perceive different aquatic ecosystem services
 ================
-Nicolas F. S-Gelais
+Nicolas F. S-Gelais, Jean-Francois Lapierre & Roxane Maranger
 2018-07-31
 
 -   [Abstract](#abstract)
@@ -9,32 +9,18 @@ Nicolas F. S-Gelais
     -   [Scientific literature: focal ecossystem services](#scientific-literature-focal-ecossystem-services)
     -   [Regulations: guidelines overlap](#regulations-guidelines-overlap)
     -   [In ecosystems: Compare the delivery of ecosystem services in Canadian Rivers](#in-ecosystems-compare-the-delivery-of-ecosystem-services-in-canadian-rivers)
--   [The need for a unifing framework](#the-need-for-a-unifing-framework)
+-   [The need for a unifing framework : the safe operating space](#the-need-for-a-unifing-framework-the-safe-operating-space)
 -   [Supplementary information](#supplementary-information)
     -   [Approach](#approach)
         -   [Aggregated guideline database](#aggregated-guideline-database)
         -   [Creating an aggregated limnological database](#creating-an-aggregated-limnological-database)
         -   [Identify which guidelines is limiting use across sites](#identify-which-guidelines-is-limiting-use-across-sites)
-        -   [Perspective](#perspective)
-        -   [SI](#si)
-        -   [References](#references)
+-   [References](#references)
 
 Abstract
 ========
 
-As a consequence of different world views of water quality it is a notion that is highly context dependant.
-
-However, the level of this complexity is poorly understood so as a first step, we develop a framework to evaluate to assess similarities and differences between the different world views in the scientific litterature, at the regulatory level and in ecosystems.
-
-From both a management and research perspective, there is a need for an integrated understanding of water quality.
-
-water quality cannot besimply conceptulize from one of these world view we need a unified view/framowrk.
-
-Water quality indices are often used used toward these objective, because the high level of complexity of water quality, a novel framework is needed to integrate the different components of water quality. Here we propose the safe operating space framework to enable a multifaceted understanding of water quality that enable to approcah this comlexity.
-
-We used the scientific litterature to understand onhow the different world views perceived water quality in term of use and services and better define these world views
-
-Example with canadians rivers
+The notion of water quality is highly context dependant and as a result can be divided in distinct world views of water quality. How these world views overlap has never been evaluated before and no approach enable to do so in an integrative manner. As a first step, we developed an approach to assess similarities and differences between the different world views at three distinct levels: the scientific literature, at the regulatory level and in aquatic ecosystems, as well as between levels using data coming from Canadian rivers. Our results demonstrate that the different world views of water quality are not orthogonal and consequently that to fully understand how water quality varies, overlaps and tradeoffs between the different aspects need to be taken into account. Can ecology reconcile these world views? We show that trophic status can be used as an integrative measure but that it lacks power in the context of tradeoffs between services (link to WQI?). We argue that a novel integrative framework to evaluate the response of the different world views; a framework that explicitly considers the tradeoffs between multiple uses based specific criteria and their variation in ecosystems. To that end we propose to use a safe operating (SafeOp) space , a flexible multidimensional space that is built from the guidelines that are associated with each ecosystem services.
 
 Introduction
 ============
@@ -47,11 +33,15 @@ The notion of water quality is highly context dependant and “express the suita
 
 First we wanted to develop a framework that enable to better understand this complxity and start looking at water quality in an integrative manner, to do so we
 
-Moving forward there is a need to look at these different world views toghether and understand how the move toghether to help and to define a safe operating space of water quality that encompass all these world views. As ecologist we often see trophic level as a integrative variable of ecosyste health, Can ecology reconcile these world views? In environment water quality indices (WQI) Hence, we wanted also to assess as the term water quality increase in importance, to which components of water quality this increase can be attributed to and how the reltive importance of components vary between fields.
+Moving forward there is a need to look at these different world views toghether and understand how the move toghether to help and to define a safe operating space of water quality that encompass all these world views. As ecologist we often see trophic level as a integrative variable of ecosyste health, Can ecology reconcile these world views?
 
-The need to understand how these world views move toghether
+We show that trophic status can be used as an integrative measure but that it lacks power in the context of tradeoffs between services (link to WQI?)
 
-How the different world views of water quality coexist in the scientific literature, at the regulatory level and in real aquatic ecosystems
+Hence, we wanted also to assess as the term water quality increase in importance, to which components of water quality this increase can be attributed to and how the relative importance of components vary between fields.
+
+We need an integrative framework that enable to evaluate the response of the different world views; a framework that explicitly considers the tradeoffs between multiple uses based specific criteria and their variation in ecosystems.
+
+To that end we propose to use a safe operating (SafeOp) space , a flexible multidimentional space that is built from the guidelines that are associated to each ecosystem services.
 
 Characterizing water quality world views
 ========================================
@@ -97,33 +87,10 @@ Even if, as we expected, for each use the % of suitable systems dropped with tro
 
 On the other hand, for the protection of aquatic wildlife, even if we expected eutrophic systems to be less safe for aquatic wildlife, it is quite surprising that even in oligotrophic rivers, only 55% percent of the sample, water was considered as safe of aquatic life. Here again the pattern make sense but the magnitude is off.
 
-<img src="figures/radar plot  -1.png" style="display: block; margin: auto;" />
+![title](figures/radar_mod.png) *Figure 2: Radar plot*
 
-    ## $rect
-    ## $rect$w
-    ## [1] 0.9618752
-    ## 
-    ## $rect$h
-    ## [1] 0.598154
-    ## 
-    ## $rect$left
-    ## [1] 1
-    ## 
-    ## $rect$top
-    ## [1] 1.2
-    ## 
-    ## 
-    ## $text
-    ## $text$x
-    ## [1] 1.224308 1.224308 1.224308
-    ## 
-    ## $text$y
-    ## [1] 1.0504615 0.9009230 0.7513845
-
-![title](figures/radar_mod.png)
-
-The need for a unifing framework
-================================
+The need for a unifing framework : the safe operating space
+===========================================================
 
 **The water quality index approach**
 
@@ -175,10 +142,6 @@ For trophic status, when a sample change from one trophic status to the other, T
 
 maybe we should calculate how often a variable is limiting when measured?
 
-### Perspective
-
-### SI
-
 <img src="figures/polCat.png" width="100%" style="display: block; margin: auto;" />
 
 ![](figures/analysisFLow.png) ![](figures/guidelines.png)
@@ -198,7 +161,8 @@ Figure 1 : Map of sampling locations across canada
 | livestock    |          0.33|         0.39|       0.18|     0.35|   0.27|        0.52|          1|          0.79|
 | recreational |          0.38|         0.41|       0.10|     0.37|   0.34|        0.66|          1|          0.79|
 
-### References
+References
+==========
 
 CCME. 2018. “Canadian Environmental Quality Guidelines.” <https://www.ccme.ca/en/resources/canadian_environmental_quality_guidelines/>.
 
