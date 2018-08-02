@@ -5,6 +5,8 @@ July 25, 2018
 
 Table 1: The number of publications in the different Web of knowledge categories with "water quality" keyword in the Topic field (see [Web of knowledge categories](http://mjl.clarivate.com/scope/scope_scie/))
 
+Table 1: The number of paper with the term water quality in the title or abstract b field and rank
+
 | Web.of.Science.Categories                     |     N|  Rank|
 |:----------------------------------------------|-----:|-----:|
 | Environmental Sciences (ES)                   |  2232|     1|
@@ -15,20 +17,36 @@ Table 1: The number of publications in the different Web of knowledge categories
 | Ecology (Eco)                                 |   352|     6|
 | Public environmental occupational health (PH) |   125|    15|
 
-| ES          | WR          | Eng         | Geo          | Bio           | Eco         | PH            |
-|:------------|:------------|:------------|:-------------|:--------------|:------------|:--------------|
-| river       | groundwater | removal     | groundwater  | species       | species     | health        |
-| groundwater | river       | river       | river        | fish          | river       | drinking      |
-| management  | flow        | wastewater  | flow         | lake          | lake        | risk          |
-| pollution   | management  | flow        | surface      | river         | management  | coli          |
-| land        | sediment    | monitoring  | land         | lakes         | ecosystem   | contamination |
-| surface     | surface     | organic     | sediment     | phytoplankton | nutrient    | public        |
-| sediment    | lake        | management  | soil         | nutrient      | land        | pollution     |
-| lake        | drinking    | surface     | management   | conditions    | soil        | river         |
-| soil        | soil        | pollution   | models       | sediment      | lakes       | human         |
-| species     | monitoring  | performance | spatial      | coastal       | ecological  | groundwater   |
-| monitoring  | conditions  | nitrogen    | watershed    | community     | nitrate     | source        |
-| nutrient    | pollution   | nutrient    | agricultural | management    | nitrogen    | collected     |
-| flow        | models      | groundwater | nitrogen     | growth        | wetlands    | households    |
-| nitrogen    | land        | soil        | lake         | biomass       | phosphorus  | rural         |
-| drinking    | watershed   | scale       | nitrate      | nitrogen      | restoration | surface       |
+Table 2: The 15 most frequent keywords in each Web of knowledge categories
+
+|  Ranks| Eco           | Agri         | Public H.     |
+|------:|:--------------|:-------------|:--------------|
+|      1| species       | soil         | health        |
+|      2| river         | irrigation   | drinking      |
+|      3| lake          | management   | risk          |
+|      4| management    | nitrogen     | coli          |
+|      5| nutrient      | agricultural | contamination |
+|      6| ecosystem     | nitrate      | public        |
+|      7| restoration   | groundwater  | pollution     |
+|      8| lakes         | nutrient     | source        |
+|      9| soil          | field        | rural         |
+|     10| phosphorus    | no3          | collected     |
+|     11| land          | river        | groundwater   |
+|     12| nitrogen      | practices    | private       |
+|     13| watershed     | land         | households    |
+|     14| fish          | production   | human         |
+|     15| ecological    | application  | season        |
+|     16| removal       | phosphorus   | household     |
+|     17| sediment      | watershed    | river         |
+|     18| wetlands      | surface      | tap           |
+|     19| riparian      | climate      | arsenic       |
+|     20| surface       | crop         | monitoring    |
+|     21| b.v           | loads        | standards     |
+|     22| flow          | flow         | community     |
+|     23| variables     | drainage     | population    |
+|     24| phytoplankton | kg           | urban         |
+|     25| conservation  | ras          | waterborne    |
+
+Table 3 : The keyword that increse the most in paper with abstract containing the term water quality
+
+Agriculture: agronomy, agricultural eng, agriculture multi
